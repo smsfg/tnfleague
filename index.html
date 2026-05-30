@@ -140,11 +140,6 @@
     }
 
     /* ── TABLES ── */
-    .table-wrap {
-      overflow-x: auto;
-      border-radius: 8px;
-      box-shadow: 0 1px 8px rgba(0,0,0,0.08);
-    }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -290,6 +285,31 @@
       margin-bottom: 10px;
     }
 
+    /* ── STICKY FIRST COLUMN ── */
+    .table-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 8px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+    }
+    /* Freeze first column */
+    table tbody td:first-child,
+    table thead th:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      background: inherit;
+    }
+    thead th:first-child {
+      background: var(--green-dark);
+      z-index: 3;
+    }
+    tbody tr:nth-child(even) td:first-child { background: var(--gray-light); }
+    tbody tr:nth-child(odd)  td:first-child { background: var(--white); }
+    tbody tr:hover td:first-child           { background: #f8f5ef; }
+    tbody tr:nth-child(even):hover td:first-child { background: #ede9e1; }
+    .par-row td:first-child { background: var(--green-dark) !important; }
+
     /* ── LOADING ── */
     .loading-msg {
       text-align: center;
@@ -323,12 +343,61 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
-      .header-inner { height: auto; flex-wrap: wrap; gap: 8px; padding: 10px 0; }
-      .week-badge { display: none; }
-      nav button { padding: 6px 10px; font-size: 12px; }
-      .page-inner { padding: 20px 16px 48px; }
-      table { font-size: 12px; }
-      thead th, tbody td { padding: 7px 8px; }
+      /* Header */
+      .header-inner {
+        height: auto;
+        flex-wrap: wrap;
+        gap: 6px;
+        padding: 8px 0;
+      }
+      .logo-main { font-size: 20px; }
+      .logo-sub  { font-size: 10px; }
+      .week-badge {
+        font-size: 11px;
+        padding: 3px 10px;
+        order: 3;
+        width: 100%;
+        text-align: center;
+        border-radius: 0;
+        background: rgba(201,168,76,0.15);
+        color: var(--gold);
+      }
+      nav { order: 2; }
+      nav button { padding: 5px 10px; font-size: 12px; }
+
+      /* Page */
+      .page-inner { padding: 16px 12px 48px; }
+      .section { margin-bottom: 28px; }
+      .section-title { font-size: 18px; }
+
+      /* Tables — smaller text, let them scroll */
+      table { font-size: 11px; min-width: max-content; }
+      thead th, tbody td { padding: 6px 8px; }
+      thead th:first-child,
+      tbody td:first-child { padding-left: 10px; min-width: 90px; max-width: 110px; }
+
+      /* Score cell circles/squares scale down */
+      .score-cell { width: 20px; height: 20px; }
+
+      /* Sort buttons wrap nicely */
+      div[style*="display:flex;gap:6px"] {
+        flex-wrap: wrap;
+      }
+
+      /* Pair cards — single column */
+      .pairs-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Career label */
+      .career-label { font-size: 14px; }
+    }
+
+    @media (max-width: 400px) {
+      table { font-size: 10px; }
+      thead th, tbody td { padding: 5px 6px; }
+      thead th:first-child,
+      tbody td:first-child { min-width: 80px; }
     }
   </style>
 </head>
@@ -861,7 +930,7 @@ function buildCareer(rows) {
   }
 
   const grossHTML = buildCareerTable(parGross, hdrGross, dataGross, 'Career Gross', true);
-  const netHTML   = buildCareerTable(parNet,   hdrNet,   dataNet,   'Career Net',   false);
+  const netHTML   = buildCareerTable(parNet,   hdrNet,   dataNet,   'Career Net',   true);
 
   document.getElementById('careerTables').innerHTML = grossHTML + netHTML;
 }
