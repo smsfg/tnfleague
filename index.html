@@ -352,7 +352,7 @@
       <div class="section">
         <div class="section-header">
           <span class="section-title">Blind Draw Standings</span>
-          <span class="section-subtitle">Season points by week</span>
+          <span class="section-subtitle" id="blindDrawSubtitle">Season points by week</span>
         </div>
         <div class="table-wrap" id="blindDrawTable">
           <div class="loading-msg">Loading standings...</div>
@@ -416,9 +416,6 @@ const SHEET_ID   = '18nSb4-SROWBz1zFkinrknAYCfZTv2wuLGcbPbWrlPfk';
 const SUMMARY_GID = '559224546';
 const CAREER_GID  = '553514996';
 
-// Number of week columns that exist (update as season progresses)
-const TOTAL_WEEKS = 8;
-
 // ══════════════════════════════════════════
 //  NAV
 // ══════════════════════════════════════════
@@ -476,32 +473,35 @@ function buildSummary(rows) {
   const headerRow  = rows[4]  || [];
   const dataRows   = rows.slice(5, 28);   // 23 player rows
 
-  // Week number from column J (index 9) of row 0
-  const weekNum = weekRow[13] || '?';
-  document.getElementById('weekBadge').textContent = `Through Week ${weekNum}`;
+  // Week number from col N (index 13) of row 0
+  const weekNum = parseInt(weekRow[13]) || 1;
+  const isSecondHalf = weekNum >= 9;
+  const halfLabel = isSecondHalf ? '2nd Half' : '1st Half';
+  document.getElementById('weekBadge').textContent = `Week ${weekNum} · ${halfLabel}`;
   document.getElementById('weekResultsLabel').textContent = `Week ${weekNum} blind draw pairs & scores`;
+  document.getElementById('blindDrawSubtitle').textContent = `${halfLabel} points by week`;
 
-  // ── How many week columns are populated? ──
-  // Weeks are in cols C–J (indices 2–9) of headerRow, labelled 1..8
-  // Find last non-empty week col by checking data
-  let lastWeek = 0;
-  for (let w = 0; w < TOTAL_WEEKS; w++) {
-    const colIdx = 2 + w;
-    const hasData = dataRows.some(r => r[colIdx] && r[colIdx] !== '');
-    if (hasData) lastWeek = w + 1;
+  // ── Week columns ──
+  // Sheet header row (index 4) has week numbers in cols C–J (indices 2–9).
+  // In the first half these are labeled 1–8; in the second half 9–16.
+  // We read the actual labels from the header row and only show cols with data.
+  const weekCols = []; // { colIdx, label }
+  for (let c = 2; c <= 9; c++) {
+    const label = (rows[4] || [])[c];
+    if (!label) continue;
+    const hasData = dataRows.some(r => r[c] && r[c] !== '');
+    if (hasData) weekCols.push({ colIdx: c, label: `Wk ${label}` });
   }
 
   // ── BLIND DRAW TABLE ──
-  const bdHeaders = ['Rank', 'Name'];
-  for (let w = 1; w <= lastWeek; w++) bdHeaders.push(`Wk ${w}`);
-  bdHeaders.push('Total');
+  const bdHeaders = ['Rank', 'Name', ...weekCols.map(w => w.label), 'Total'];
 
-  // cols: B=1(name), C–J=2–9(weeks), K=10(total), L=11(rank)
+  // cols: B=1(name), week cols dynamic, K=10(total), L=11(rank)
   const bdData = dataRows
     .filter(r => r[1])
     .map(r => ({
       name:  r[1],
-      weeks: Array.from({length: lastWeek}, (_, i) => r[2 + i] || ''),
+      weeks: weekCols.map(w => r[w.colIdx] || ''),
       total: r[10] || '',
       rank:  parseInt(r[11]) || 999
     }))
