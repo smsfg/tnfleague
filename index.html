@@ -216,6 +216,11 @@
       font-style: italic;
     }
 
+    /* Career round score markers */
+    .score-cell { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; }
+    .birdie { border: 2px solid #2d6a2d; border-radius: 50%; }
+    .bogey  { border: 2px solid #c0392b; }
+
     /* ── WEEK RESULTS GRID ── */
     .pairs-grid {
       display: grid;
@@ -566,8 +571,7 @@ function buildSummary(rows) {
     [
       { label: 'By Rank', key: 'rank' },
       { label: 'By Name', key: 'name' },
-      { label: 'Most Recent Week', key: 'recent' },
-      { label: 'By Total', key: 'total' }
+      { label: 'Most Recent Week', key: 'recent' }
     ],
     (key, dir) => renderBDTable(key, dir)
   );
@@ -580,7 +584,13 @@ function buildSummary(rows) {
   //       S=18(rounds), T=19(wkly pts), U=20(total pts), V=21(ind rank), W=22(avg)
   //       X=23(CR gross), Y=24(CR net)
   const ftRows  = rows.slice(5, 28).filter(r => r[14]);
-  const subRows = rows.slice(32, 45).filter(r => r[14] && r[14].trim());
+  const subRows = rows.slice(32, 45).filter(r => {
+    const name = (r[14] || '').trim();
+    if (!name) return false;
+    // Exclude any row that looks like a header (e.g. "Name", "Subs", "Full Time")
+    if (['name','subs','full time','substitutes'].includes(name.toLowerCase())) return false;
+    return true;
+  });
 
   function buildIndTable(playerRows, isSub) {
     let data = playerRows.map(r => ({
@@ -657,8 +667,7 @@ function buildSummary(rows) {
       [
         { label: 'By Rank', key: 'rank' },
         { label: 'By Name', key: 'name' },
-        { label: 'Weekly Points', key: 'wklyPts' },
-        { label: 'Total Points', key: 'totalPts' }
+        { label: 'Weekly Points', key: 'wklyPts' }
       ],
       (key, dir) => renderIndTable(key, dir)
     );
@@ -757,7 +766,7 @@ function buildCareer(rows) {
   const hdrNet    = rows[30] || [];
   const dataNet   = rows.slice(31, 54).filter(r => r[1] && r[1].trim());
 
-  function buildCareerTable(parRow, hdrRow, dataRows, label) {
+  function buildCareerTable(parRow, hdrRow, dataRows, label, isGross) {
     // Auto-detect column positions from the header row
     // Header row has: blank, "Career Gross"/"Career Net", 1,2,3,...,9,OUT,(blank),10,11,...,18,IN,TOT,Com. Score,Rank
     let holeCols = [];  // indices for holes 1-9
@@ -778,6 +787,22 @@ function buildCareer(rows) {
 
     const holeNums = ['1','2','3','4','5','6','7','8','9'];
     const backNums = ['10','11','12','13','14','15','16','17','18'];
+
+    // Build par lookup: colIdx -> par value
+    const parByCol = {};
+    [...holeCols, ...backCols].forEach(c => {
+      parByCol[c] = parseInt(parRow[c]) || null;
+    });
+
+    function scoreCell(val, colIdx) {
+      const score = parseInt(val);
+      if (!val || isNaN(score) || score === 0) return val || '';
+      if (!isGross || !parByCol[colIdx]) return val;
+      const par = parByCol[colIdx];
+      if (score <= par - 1) return `<span class="score-cell birdie">${val}</span>`;
+      if (score >= par + 1) return `<span class="score-cell bogey">${val}</span>`;
+      return val;
+    }
 
     let html = `
       <div class="career-label">${label}</div>
@@ -822,9 +847,9 @@ function buildCareer(rows) {
 
       html += `<tr>
         <td>${nameDisplay}</td>
-        ${holeCols.map(c  => `<td>${r[c] || ''}</td>`).join('')}
+        ${holeCols.map(c  => `<td>${scoreCell(r[c], c)}</td>`).join('')}
         <td class="subtotal">${r[outCol] || ''}</td>
-        ${backCols.map(c  => `<td>${r[c] === '0' ? '—' : (r[c] || '')}</td>`).join('')}
+        ${backCols.map(c  => `<td>${r[c] === '0' ? '—' : scoreCell(r[c], c)}</td>`).join('')}
         <td class="subtotal">${r[inCol] === '0' || !r[inCol] ? '—' : r[inCol]}</td>
         <td class="total-col">${tot || '—'}</td>
         <td class="rank-cell${rank === 1 ? ' rank-1' : ''}">${rank || '—'}</td>
@@ -835,8 +860,8 @@ function buildCareer(rows) {
     return html;
   }
 
-  const grossHTML = buildCareerTable(parGross, hdrGross, dataGross, 'Career Gross');
-  const netHTML   = buildCareerTable(parNet,   hdrNet,   dataNet,   'Career Net');
+  const grossHTML = buildCareerTable(parGross, hdrGross, dataGross, 'Career Gross', true);
+  const netHTML   = buildCareerTable(parNet,   hdrNet,   dataNet,   'Career Net',   false);
 
   document.getElementById('careerTables').innerHTML = grossHTML + netHTML;
 }
