@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thursday Night Fun League</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --green: #2d6a2d;
+      --green-dark: #1a3f1a;
+      --green-light: #3d8c3d;
+      --gold: #c9a84c;
+      --gold-light: #e8c96a;
+      --cream: #f5f0e8;
+      --white: #ffffff;
+      --gray-light: #f0ede6;
+      --gray-mid: #d4cfc6;
+      --gray-dark: #6b6560;
+      --text: #1a1a1a;
+      --text-muted: #5a5550;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Barlow', sans-serif;
+      background: var(--green-dark);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--green-dark);
+      border-bottom: 3px solid var(--gold);
+      padding: 0 24px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+    .logo {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+    .logo-main {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--gold);
+      letter-spacing: 2px;
+    }
+    .logo-sub {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      color: var(--gray-mid);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+    nav {
+      display: flex;
+      gap: 4px;
+    }
+    nav button {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      background: none;
+      border: none;
+      color: var(--gray-mid);
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.15s;
+    }
+    nav button:hover { color: var(--gold-light); background: rgba(255,255,255,0.05); }
+    nav button.active { color: var(--gold); background: rgba(201,168,76,0.12); }
+
+    .week-badge {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: var(--green-dark);
+      background: var(--gold);
+      padding: 4px 12px;
+      border-radius: 20px;
+    }
+
+    /* ── MAIN ── */
+    main {
+      background: var(--cream);
+      min-height: calc(100vh - 64px);
+    }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .page-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* ── SECTION HEADERS ── */
+    .section {
+      margin-bottom: 40px;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--green);
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px;
+      color: var(--green-dark);
+      letter-spacing: 1.5px;
+    }
+    .section-subtitle {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── TABLES ── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 8px;
+      box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--white);
+      font-size: 13px;
+    }
+    thead tr {
+      background: var(--green-dark);
+      color: var(--gold);
+    }
+    thead th {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 10px 12px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    thead th:first-child { text-align: left; padding-left: 16px; }
+    tbody tr { border-bottom: 1px solid var(--gray-light); transition: background 0.1s; }
+    tbody tr:hover { background: #f8f5ef; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody td {
+      padding: 9px 12px;
+      text-align: center;
+      color: var(--text);
+    }
+    tbody td:first-child { text-align: left; padding-left: 16px; font-weight: 600; }
+
+    /* Alternating row tints */
+    tbody tr:nth-child(even) { background: var(--gray-light); }
+    tbody tr:nth-child(even):hover { background: #ede9e1; }
+
+    .rank-cell {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      color: var(--green-dark);
+    }
+    .rank-1 { color: var(--gold); }
+
+    /* Par row styling */
+    .par-row td {
+      background: var(--green-dark) !important;
+      color: var(--gold) !important;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: 0.5px;
+    }
+    .par-row td:first-child { color: var(--gold) !important; }
+
+    /* Hole header row */
+    .hole-header th {
+      background: var(--green);
+      color: var(--cream);
+      font-size: 11px;
+    }
+
+    /* OUT/IN/TOT emphasis */
+    .subtotal { background: rgba(45,106,45,0.07) !important; font-weight: 700 !important; }
+    .total-col { font-weight: 700 !important; color: var(--green-dark) !important; }
+
+    /* Incomplete flag */
+    .incomplete {
+      font-size: 10px;
+      color: var(--gray-dark);
+      font-style: italic;
+    }
+
+    /* ── WEEK RESULTS GRID ── */
+    .pairs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .pair-card {
+      background: var(--white);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+    }
+    .pair-header {
+      background: var(--green-dark);
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .pair-rank {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .pair-points {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--cream);
+      letter-spacing: 0.5px;
+    }
+    .pair-body { padding: 10px 14px; }
+    .pair-player {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+      border-bottom: 1px solid var(--gray-light);
+      font-size: 13px;
+    }
+    .pair-player:last-child { border-bottom: none; }
+    .pair-name { font-weight: 600; color: var(--text); }
+    .pair-net {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      color: var(--green);
+      font-size: 14px;
+    }
+    .pair-net.over { color: #c0392b; }
+
+    /* ── CAREER TABLES ── */
+    .career-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .career-label {
+      display: inline-block;
+      background: var(--green-dark);
+      color: var(--gold);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 16px;
+      letter-spacing: 2px;
+      padding: 4px 14px;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    /* ── LOADING ── */
+    .loading-msg {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--text-muted);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 16px;
+      letter-spacing: 1px;
+    }
+    .error-msg {
+      text-align: center;
+      padding: 40px 24px;
+      color: #c0392b;
+      font-size: 13px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--green-dark);
+      border-top: 2px solid var(--gold);
+      padding: 16px 24px;
+      text-align: center;
+    }
+    footer p {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px;
+      color: var(--gray-dark);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 640px) {
+      .header-inner { height: auto; flex-wrap: wrap; gap: 8px; padding: 10px 0; }
+      .week-badge { display: none; }
+      nav button { padding: 6px 10px; font-size: 12px; }
+      .page-inner { padding: 20px 16px 48px; }
+      table { font-size: 12px; }
+      thead th, tbody td { padding: 7px 8px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-main">Thursday Night Fun League</span>
+      <span class="logo-sub">tnfleague.org &nbsp;·&nbsp; Golf Division</span>
+    </div>
+    <nav>
+      <button class="active" onclick="showPage('summary')">Standings</button>
+      <button onclick="showPage('career')">Career Round</button>
+    </nav>
+    <div class="week-badge" id="weekBadge">Loading...</div>
+  </div>
+</header>
+
+<main>
+  <!-- ══════════ SUMMARY PAGE ══════════ -->
+  <div class="page active" id="page-summary">
+    <div class="page-inner">
+
+      <!-- Blind Draw Standings -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Blind Draw Standings</span>
+          <span class="section-subtitle">Season points by week</span>
+        </div>
+        <div class="table-wrap" id="blindDrawTable">
+          <div class="loading-msg">Loading standings...</div>
+        </div>
+      </div>
+
+      <!-- Individual Stats -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Individual Stats</span>
+          <span class="section-subtitle">Handicaps · Points · Averages</span>
+        </div>
+        <div class="table-wrap" id="indStatsTable">
+          <div class="loading-msg">Loading stats...</div>
+        </div>
+      </div>
+
+      <!-- This Week -->
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">This Week's Results</span>
+          <span class="section-subtitle" id="weekResultsLabel">Blind draw pairs &amp; scores</span>
+        </div>
+        <div id="weekResultsGrid">
+          <div class="loading-msg">Loading results...</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════ CAREER PAGE ══════════ -->
+  <div class="page" id="page-career">
+    <div class="page-inner">
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Career Round</span>
+          <span class="section-subtitle">Best score on each hole — season to date</span>
+        </div>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:20px; font-style:italic;">
+          Each player's best gross and net score recorded on each hole across all rounds played this season.
+          Players marked * have not yet completed a full 18-hole round.
+        </p>
+        <div class="career-wrap" id="careerTables">
+          <div class="loading-msg">Loading career data...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>Thursday Night Fun League &nbsp;·&nbsp; tnfleague.org &nbsp;·&nbsp; Updated weekly</p>
+</footer>
+
+<script>
+// ══════════════════════════════════════════
+//  CONFIG — update spreadsheet/sheet IDs here
+// ══════════════════════════════════════════
+const SHEET_ID   = '18nSb4-SROWBz1zFkinrknAYCfZTv2wuLGcbPbWrlPfk';
+const SUMMARY_GID = '559224546';
+const CAREER_GID  = '553514996';
+
+// Number of week columns that exist (update as season progresses)
+const TOTAL_WEEKS = 8;
+
+// ══════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ══════════════════════════════════════════
+//  FETCH CSV
+// ══════════════════════════════════════════
+async function fetchCSV(gid) {
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
+  const res  = await fetch(url);
+  if (!res.ok) throw new Error('Failed to fetch sheet');
+  const text = await res.text();
+  return parseCSV(text);
+}
+
+function parseCSV(text) {
+  const rows = [];
+  let row = [], cur = '', inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (inQ) {
+      if (c === '"' && text[i+1] === '"') { cur += '"'; i++; }
+      else if (c === '"') inQ = false;
+      else cur += c;
+    } else {
+      if (c === '"') inQ = true;
+      else if (c === ',') { row.push(cur.trim()); cur = ''; }
+      else if (c === '\n') { row.push(cur.trim()); rows.push(row); row = []; cur = ''; }
+      else if (c !== '\r') cur += c;
+    }
+  }
+  if (cur || row.length) { row.push(cur.trim()); rows.push(row); }
+  return rows;
+}
+
+// ══════════════════════════════════════════
+//  BUILD SUMMARY
+// ══════════════════════════════════════════
+function buildSummary(rows) {
+  // Row indices (0-based):
+  // Row 0  = row 1  in sheet  (Results Through Week header)
+  // Row 4  = row 5  — column headers for both sections
+  // Rows 5–27 = data rows 6–28 (players)
+  // Row 31 = row 32 — Team Breakdown header
+  // Row 32 = row 33 — Team Breakdown col headers
+  // Rows 33–56 = Team Breakdown data
+
+  const weekRow    = rows[0]  || [];
+  const headerRow  = rows[4]  || [];
+  const dataRows   = rows.slice(5, 28);   // 23 player rows
+
+  // Week number from column J (index 9) of row 0
+  const weekNum = weekRow[13] || '?';
+  document.getElementById('weekBadge').textContent = `Through Week ${weekNum}`;
+  document.getElementById('weekResultsLabel').textContent = `Week ${weekNum} blind draw pairs & scores`;
+
+  // ── How many week columns are populated? ──
+  // Weeks are in cols C–J (indices 2–9) of headerRow, labelled 1..8
+  // Find last non-empty week col by checking data
+  let lastWeek = 0;
+  for (let w = 0; w < TOTAL_WEEKS; w++) {
+    const colIdx = 2 + w;
+    const hasData = dataRows.some(r => r[colIdx] && r[colIdx] !== '');
+    if (hasData) lastWeek = w + 1;
+  }
+
+  // ── BLIND DRAW TABLE ──
+  const bdHeaders = ['Rank', 'Name'];
+  for (let w = 1; w <= lastWeek; w++) bdHeaders.push(`Wk ${w}`);
+  bdHeaders.push('Total');
+
+  // cols: B=1(name), C–J=2–9(weeks), K=10(total), L=11(rank)
+  const bdData = dataRows
+    .filter(r => r[1])
+    .map(r => ({
+      name:  r[1],
+      weeks: Array.from({length: lastWeek}, (_, i) => r[2 + i] || ''),
+      total: r[10] || '',
+      rank:  parseInt(r[11]) || 999
+    }))
+    .sort((a, b) => a.rank - b.rank);
+
+  let bdHTML = `<table><thead><tr>`;
+  bdHeaders.forEach((h, i) => {
+    bdHTML += `<th${i === 0 ? '' : ''}>${h}</th>`;
+  });
+  bdHTML += `</tr></thead><tbody>`;
+  bdData.forEach(p => {
+    bdHTML += `<tr>
+      <td class="rank-cell${p.rank === 1 ? ' rank-1' : ''}">${p.rank}</td>
+      <td>${p.name}</td>
+      ${p.weeks.map(w => `<td>${w || '—'}</td>`).join('')}
+      <td class="total-col">${p.total}</td>
+    </tr>`;
+  });
+  bdHTML += `</tbody></table>`;
+  document.getElementById('blindDrawTable').innerHTML = bdHTML;
+
+  // ── INDIVIDUAL STATS TABLE ──
+  // cols: O=14(name), P=15(W1 HC), Q=16(curr HC), R=17(next HC),
+  //       S=18(rounds), T=19(wkly pts), U=20(total pts), V=21(ind rank), W=22(avg)
+  //       X=23(CR gross), Y=24(CR net)
+  // Full-time players in rows 5-28, subs in rows 33-41 approx
+
+  // Full-time
+  const ftRows = rows.slice(5, 28).filter(r => r[14]);
+  // Subs — rows 33 onward until empty name
+  const subRows = rows.slice(32, 45).filter(r => r[14] && r[14].trim());
+
+  function buildIndTable(playerRows, title) {
+    let html = '';
+    if (title) html += `<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin:14px 0 6px;">${title}</div>`;
+    html += `<table><thead><tr>
+      <th>Name</th>
+      <th>W1 HC</th><th>Curr HC</th><th>Next HC</th>
+      <th>Rnds</th><th>Wkly Pts</th><th>Total Pts</th>
+      <th>Ind Rank</th><th>Avg</th>
+      <th>CR Gross</th><th>CR Net</th>
+    </tr></thead><tbody>`;
+
+    const sorted = [...playerRows].sort((a, b) => {
+      const ra = parseInt(a[21]) || 999;
+      const rb = parseInt(b[21]) || 999;
+      return ra - rb;
+    });
+
+    sorted.forEach(r => {
+      const rank = parseInt(r[21]) || 0;
+      html += `<tr>
+        <td>${r[14]}</td>
+        <td>${r[15] || '—'}</td>
+        <td>${r[16] || '—'}</td>
+        <td>${r[17] || '—'}</td>
+        <td>${r[18] || '—'}</td>
+        <td>${r[19] || '—'}</td>
+        <td>${r[20] || '—'}</td>
+        <td class="rank-cell${rank === 1 ? ' rank-1' : ''}">${rank || '—'}</td>
+        <td>${r[22] || '—'}</td>
+        <td>${r[23] || '—'}</td>
+        <td>${r[24] || '—'}</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    return html;
+  }
+
+  let indHTML = buildIndTable(ftRows, '');
+  if (subRows.length) {
+    indHTML += `<div style="margin-top:16px;">` + buildIndTable(subRows, 'Substitutes') + `</div>`;
+  }
+  document.getElementById('indStatsTable').innerHTML = indHTML;
+
+  // ── THIS WEEK'S PAIRS ──
+  // Team breakdown: rows 33–56 (0-based), cols B–F (1–5)
+  // Row 32 = header, rows 33+ = data
+  // Structure: name(1), net(2), total_net(3), rank(4), points(5)
+  // Pairs share total_net/rank/points on first player row; second is blank
+  const tdRows = rows.slice(33, 57).filter(r => r[1] && r[1].trim());
+
+  // Group into pairs
+  const pairs = [];
+  let currentPair = null;
+  tdRows.forEach(r => {
+    const hasGroupData = r[3] && r[3].trim(); // total col
+    if (hasGroupData) {
+      if (currentPair) pairs.push(currentPair);
+      currentPair = {
+        total: r[3],
+        rank: r[4],
+        points: r[5],
+        players: [{ name: r[1], net: r[2] }]
+      };
+    } else if (currentPair) {
+      currentPair.players.push({ name: r[1], net: r[2] });
+    }
+  });
+  if (currentPair) pairs.push(currentPair);
+
+  // Sort by rank
+  pairs.sort((a, b) => (parseInt(a.rank) || 99) - (parseInt(b.rank) || 99));
+
+  let pairsHTML = `<div class="pairs-grid">`;
+  pairs.forEach(pair => {
+    const rank = parseInt(pair.rank) || '—';
+    pairsHTML += `<div class="pair-card">
+      <div class="pair-header">
+        <span class="pair-rank">#${rank}</span>
+        <span class="pair-points">${pair.points ? pair.points + ' pts' : ''}</span>
+      </div>
+      <div class="pair-body">`;
+    pair.players.forEach(p => {
+      const net = parseInt(p.net);
+      const netStr = isNaN(net) ? p.net : (net <= 0 ? net : `+${net}`);
+      const overClass = net > 0 ? ' over' : '';
+      pairsHTML += `<div class="pair-player">
+        <span class="pair-name">${p.name}</span>
+        <span class="pair-net${overClass}">${netStr || ''}</span>
+      </div>`;
+    });
+    pairsHTML += `</div></div>`;
+  });
+  pairsHTML += `</div>`;
+  if (pairs.length === 0) pairsHTML = `<div class="error-msg">No pairing data available yet.</div>`;
+  document.getElementById('weekResultsGrid').innerHTML = pairsHTML;
+}
+
+// ══════════════════════════════════════════
+//  BUILD CAREER
+// ══════════════════════════════════════════
+function buildCareer(rows) {
+  // Par row: row index 1 (0-based = sheet row 2)
+  // Gross header: row 2 (sheet row 3) — holes 1–9, OUT, 10–18, IN, TOT, Rank
+  // Gross data: rows 3–25 (sheet rows 4–26)
+  // Net par row: row 29 (sheet row 30)
+  // Net header: row 30 (sheet row 31)
+  // Net data: rows 31–53 (sheet rows 32–54)
+
+  const parGross  = rows[1]  || [];
+  const hdrGross  = rows[2]  || [];
+  const dataGross = rows.slice(3, 26).filter(r => r[1] && r[1].trim());
+
+  const parNet    = rows[29] || [];
+  const hdrNet    = rows[30] || [];
+  const dataNet   = rows.slice(31, 54).filter(r => r[1] && r[1].trim());
+
+  function buildCareerTable(parRow, dataRows, label) {
+    // Hole cols: C–K = 2–10 (holes 1–9 + OUT), skip col L(11=empty), M–V = 12–21 (10–18 + IN), W=22(TOT), X=23(rank)
+    const holeCols = [2,3,4,5,6,7,8,9,10]; // 1-9
+    const outCol   = 10;
+    const backCols = [12,13,14,15,16,17,18,19,20]; // 10-18
+    const inCol    = 21;
+    const totCol   = 22;
+    const rankCol  = 23;
+
+    const holeNums = ['1','2','3','4','5','6','7','8','9'];
+    const backNums = ['10','11','12','13','14','15','16','17','18'];
+
+    let html = `
+      <div class="career-label">${label}</div>
+      <div class="table-wrap">
+      <table>
+        <thead>
+          <tr class="hole-header">
+            <th>Player</th>
+            ${holeNums.map(h => `<th>${h}</th>`).join('')}
+            <th>OUT</th>
+            ${backNums.map(h => `<th>${h}</th>`).join('')}
+            <th>IN</th>
+            <th>TOT</th>
+            <th>Rank</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="par-row">
+            <td>Par</td>
+            ${holeCols.map(c => `<td>${parRow[c] || ''}</td>`).join('')}
+            <td>${parRow[outCol] || ''}</td>
+            ${backCols.map(c => `<td>${parRow[c] || ''}</td>`).join('')}
+            <td>${parRow[inCol] || ''}</td>
+            <td>${parRow[totCol] || ''}</td>
+            <td></td>
+          </tr>`;
+
+    // Sort by rank
+    const sorted = [...dataRows].sort((a, b) => {
+      const ra = parseFloat(a[rankCol]) || 999;
+      const rb = parseFloat(b[rankCol]) || 999;
+      return ra - rb;
+    });
+
+    sorted.forEach(r => {
+      const rank    = r[rankCol] ? Math.round(parseFloat(r[rankCol])) : null;
+      const tot     = r[totCol] || '';
+      const incomplete = backCols.some(c => r[c] === '0' || r[c] === '');
+      const nameDisplay = r[1] + (incomplete ? ' *' : '');
+
+      html += `<tr>
+        <td>${nameDisplay}</td>
+        ${holeCols.map(c  => `<td>${r[c] || ''}</td>`).join('')}
+        <td class="subtotal">${r[outCol] || ''}</td>
+        ${backCols.map(c  => `<td>${r[c] === '0' ? '—' : (r[c] || '')}</td>`).join('')}
+        <td class="subtotal">${r[inCol] === '0' || !r[inCol] ? '—' : r[inCol]}</td>
+        <td class="total-col">${tot || '—'}</td>
+        <td class="rank-cell${rank === 1 ? ' rank-1' : ''}">${rank || '—'}</td>
+      </tr>`;
+    });
+
+    html += `</tbody></table></div>`;
+    return html;
+  }
+
+  const grossHTML = buildCareerTable(parGross, dataGross, 'Career Gross');
+  const netHTML   = buildCareerTable(parNet,   dataNet,   'Career Net');
+
+  document.getElementById('careerTables').innerHTML = grossHTML + netHTML;
+}
+
+// ══════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════
+async function init() {
+  try {
+    const [summaryRows, careerRows] = await Promise.all([
+      fetchCSV(SUMMARY_GID),
+      fetchCSV(CAREER_GID)
+    ]);
+    buildSummary(summaryRows);
+    buildCareer(careerRows);
+  } catch (err) {
+    console.error(err);
+    ['blindDrawTable','indStatsTable','weekResultsGrid','careerTables'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = `<div class="error-msg">Unable to load data. Make sure the spreadsheet is shared publicly (Anyone with the link → Viewer).</div>`;
+    });
+  }
+}
+
+init();
+</script>
+</body>
+</html>
