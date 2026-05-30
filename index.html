@@ -458,20 +458,46 @@ function parseCSV(text) {
 }
 
 // ══════════════════════════════════════════
+//  SORT HELPERS
+// ══════════════════════════════════════════
+function makeSortButtons(buttons, onSort) {
+  // buttons: [{label, key}]
+  let currentKey = buttons[0].key;
+  let currentDir = 1;
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;gap:6px;margin-bottom:10px;';
+  buttons.forEach(btn => {
+    const el = document.createElement('button');
+    el.textContent = btn.label;
+    el.dataset.key = btn.key;
+    el.style.cssText = `font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;
+      letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:4px;cursor:pointer;
+      border:1px solid var(--green);background:var(--white);color:var(--green);transition:all 0.15s;`;
+    el.addEventListener('click', () => {
+      if (currentKey === btn.key) { currentDir *= -1; }
+      else { currentKey = btn.key; currentDir = 1; }
+      wrap.querySelectorAll('button').forEach(b => {
+        b.style.background = 'var(--white)';
+        b.style.color = 'var(--green)';
+      });
+      el.style.background = 'var(--green-dark)';
+      el.style.color = 'var(--gold)';
+      onSort(currentKey, currentDir);
+    });
+    wrap.appendChild(el);
+  });
+  // Activate first button
+  wrap.querySelector('button').style.background = 'var(--green-dark)';
+  wrap.querySelector('button').style.color = 'var(--gold)';
+  return wrap;
+}
+
+// ══════════════════════════════════════════
 //  BUILD SUMMARY
 // ══════════════════════════════════════════
 function buildSummary(rows) {
-  // Row indices (0-based):
-  // Row 0  = row 1  in sheet  (Results Through Week header)
-  // Row 4  = row 5  — column headers for both sections
-  // Rows 5–27 = data rows 6–28 (players)
-  // Row 31 = row 32 — Team Breakdown header
-  // Row 32 = row 33 — Team Breakdown col headers
-  // Rows 33–56 = Team Breakdown data
-
-  const weekRow    = rows[0]  || [];
-  const headerRow  = rows[4]  || [];
-  const dataRows   = rows.slice(5, 28);   // 23 player rows
+  const weekRow  = rows[0] || [];
+  const dataRows = rows.slice(5, 28);
 
   // Week number from col N (index 13) of row 0
   const weekNum = parseInt(weekRow[13]) || 1;
@@ -482,100 +508,181 @@ function buildSummary(rows) {
   document.getElementById('blindDrawSubtitle').textContent = `${halfLabel} points by week`;
 
   // ── Week columns ──
-  // Sheet header row (index 4) has week numbers in cols C–J (indices 2–9).
-  // In the first half these are labeled 1–8; in the second half 9–16.
-  // We read the actual labels from the header row and only show cols with data.
-  const weekCols = []; // { colIdx, label }
+  const weekCols = [];
   for (let c = 2; c <= 9; c++) {
     const label = (rows[4] || [])[c];
     if (!label) continue;
     const hasData = dataRows.some(r => r[c] && r[c] !== '');
     if (hasData) weekCols.push({ colIdx: c, label: `Wk ${label}` });
   }
+  const lastWeekCol = weekCols.length ? weekCols[weekCols.length - 1] : null;
 
   // ── BLIND DRAW TABLE ──
-  const bdHeaders = ['Rank', 'Name', ...weekCols.map(w => w.label), 'Total'];
-
-  // cols: B=1(name), week cols dynamic, K=10(total), L=11(rank)
-  const bdData = dataRows
+  let bdData = dataRows
     .filter(r => r[1])
     .map(r => ({
       name:  r[1],
-      weeks: weekCols.map(w => r[w.colIdx] || ''),
-      total: r[10] || '',
+      weeks: weekCols.map(w => parseFloat(r[w.colIdx]) || 0),
+      weeksRaw: weekCols.map(w => r[w.colIdx] || ''),
+      total: parseFloat(r[10]) || 0,
+      totalRaw: r[10] || '',
       rank:  parseInt(r[11]) || 999
-    }))
-    .sort((a, b) => a.rank - b.rank);
+    }));
 
-  let bdHTML = `<table><thead><tr>`;
-  bdHeaders.forEach((h, i) => {
-    bdHTML += `<th${i === 0 ? '' : ''}>${h}</th>`;
-  });
-  bdHTML += `</tr></thead><tbody>`;
-  bdData.forEach(p => {
-    bdHTML += `<tr>
-      <td class="rank-cell${p.rank === 1 ? ' rank-1' : ''}">${p.rank}</td>
-      <td>${p.name}</td>
-      ${p.weeks.map(w => `<td>${w || '—'}</td>`).join('')}
-      <td class="total-col">${p.total}</td>
-    </tr>`;
-  });
-  bdHTML += `</tbody></table>`;
-  document.getElementById('blindDrawTable').innerHTML = bdHTML;
+  function renderBDTable(sortKey, sortDir) {
+    const sorted = [...bdData].sort((a, b) => {
+      if (sortKey === 'name') return sortDir * a.name.localeCompare(b.name);
+      if (sortKey === 'recent') {
+        const ai = lastWeekCol ? (parseFloat(a.weeksRaw[weekCols.indexOf(lastWeekCol)]) || 0) : 0;
+        const bi = lastWeekCol ? (parseFloat(b.weeksRaw[weekCols.indexOf(lastWeekCol)]) || 0) : 0;
+        return sortDir * (bi - ai);
+      }
+      if (sortKey === 'total') return sortDir * (b.total - a.total);
+      return a.rank - b.rank;
+    });
+
+    let html = `<table><thead><tr>
+      <th>Rank</th><th>Name</th>
+      ${weekCols.map(w => `<th>${w.label}</th>`).join('')}
+      <th>Total</th>
+    </tr></thead><tbody>`;
+    sorted.forEach(p => {
+      html += `<tr>
+        <td class="rank-cell${p.rank === 1 ? ' rank-1' : ''}">${p.rank}</td>
+        <td>${p.name}</td>
+        ${p.weeksRaw.map(w => `<td>${w || '—'}</td>`).join('')}
+        <td class="total-col">${p.totalRaw}</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    tableEl.innerHTML = html;
+  }
+
+  const bdWrap = document.getElementById('blindDrawTable');
+  bdWrap.innerHTML = '';
+  const tableEl = document.createElement('div');
+  tableEl.className = 'table-wrap';
+  const sortBtns = makeSortButtons(
+    [
+      { label: 'By Rank', key: 'rank' },
+      { label: 'By Name', key: 'name' },
+      { label: 'Most Recent Week', key: 'recent' },
+      { label: 'By Total', key: 'total' }
+    ],
+    (key, dir) => renderBDTable(key, dir)
+  );
+  bdWrap.appendChild(sortBtns);
+  bdWrap.appendChild(tableEl);
+  renderBDTable('rank', 1);
 
   // ── INDIVIDUAL STATS TABLE ──
   // cols: O=14(name), P=15(W1 HC), Q=16(curr HC), R=17(next HC),
   //       S=18(rounds), T=19(wkly pts), U=20(total pts), V=21(ind rank), W=22(avg)
   //       X=23(CR gross), Y=24(CR net)
-  // Full-time players in rows 5-28, subs in rows 33-41 approx
-
-  // Full-time
-  const ftRows = rows.slice(5, 28).filter(r => r[14]);
-  // Subs — rows 33 onward until empty name
+  const ftRows  = rows.slice(5, 28).filter(r => r[14]);
   const subRows = rows.slice(32, 45).filter(r => r[14] && r[14].trim());
 
-  function buildIndTable(playerRows, title) {
-    let html = '';
-    if (title) html += `<div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin:14px 0 6px;">${title}</div>`;
-    html += `<table><thead><tr>
-      <th>Name</th>
-      <th>W1 HC</th><th>Curr HC</th><th>Next HC</th>
-      <th>Rnds</th><th>Wkly Pts</th><th>Total Pts</th>
-      <th>Ind Rank</th><th>Avg</th>
-      <th>CR Gross</th><th>CR Net</th>
-    </tr></thead><tbody>`;
+  function buildIndTable(playerRows, isSub) {
+    let data = playerRows.map(r => ({
+      raw: r,
+      name:      r[14],
+      w1hc:      r[15] || '—',
+      currHc:    r[16] || '—',
+      nextHc:    r[17] || '—',
+      rounds:    parseInt(r[18]) || 0,
+      roundsRaw: r[18] || '—',
+      wklyPts:   parseFloat(r[19]) || 0,
+      wklyRaw:   r[19] || '—',
+      totalPts:  parseFloat(r[20]) || 0,
+      totalRaw:  r[20] || '—',
+      rank:      parseInt(r[21]) || 999,
+      avg:       r[22] || '—',
+      crGross:   r[23] || '—',
+      crNet:     r[24] || '—',
+    }));
 
-    const sorted = [...playerRows].sort((a, b) => {
-      const ra = parseInt(a[21]) || 999;
-      const rb = parseInt(b[21]) || 999;
-      return ra - rb;
-    });
+    const wrap = document.createElement('div');
 
-    sorted.forEach(r => {
-      const rank = parseInt(r[21]) || 0;
-      html += `<tr>
-        <td>${r[14]}</td>
-        <td>${r[15] || '—'}</td>
-        <td>${r[16] || '—'}</td>
-        <td>${r[17] || '—'}</td>
-        <td>${r[18] || '—'}</td>
-        <td>${r[19] || '—'}</td>
-        <td>${r[20] || '—'}</td>
-        <td class="rank-cell${rank === 1 ? ' rank-1' : ''}">${rank || '—'}</td>
-        <td>${r[22] || '—'}</td>
-        <td>${r[23] || '—'}</td>
-        <td>${r[24] || '—'}</td>
-      </tr>`;
-    });
-    html += `</tbody></table>`;
-    return html;
+    if (isSub) {
+      // Subs: just HC columns + rounds, no sort buttons
+      let html = `<table><thead><tr>
+        <th>Name</th><th>W1 HC</th><th>Curr HC</th><th>Next HC</th><th>Rounds</th>
+      </tr></thead><tbody>`;
+      [...data].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
+        html += `<tr>
+          <td>${p.name}</td>
+          <td>${p.w1hc}</td><td>${p.currHc}</td><td>${p.nextHc}</td>
+          <td>${p.roundsRaw}</td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      wrap.innerHTML = html;
+      return wrap;
+    }
+
+    // Full members: sortable
+    const tableEl = document.createElement('div');
+
+    function renderIndTable(sortKey, sortDir) {
+      const sorted = [...data].sort((a, b) => {
+        if (sortKey === 'name')     return sortDir * a.name.localeCompare(b.name);
+        if (sortKey === 'wklyPts') return sortDir * (b.wklyPts - a.wklyPts);
+        if (sortKey === 'totalPts') return sortDir * (b.totalPts - a.totalPts);
+        return a.rank - b.rank;
+      });
+      let html = `<table><thead><tr>
+        <th>Name</th>
+        <th>W1 HC</th><th>Curr HC</th><th>Next HC</th>
+        <th>Rnds</th><th>Wkly Pts</th><th>Total Pts</th>
+        <th>Ind Rank</th><th>Avg</th>
+        <th>CR Gross</th><th>CR Net</th>
+      </tr></thead><tbody>`;
+      sorted.forEach(p => {
+        html += `<tr>
+          <td>${p.name}</td>
+          <td>${p.w1hc}</td><td>${p.currHc}</td><td>${p.nextHc}</td>
+          <td>${p.roundsRaw}</td>
+          <td>${p.wklyRaw}</td>
+          <td>${p.totalRaw}</td>
+          <td class="rank-cell${p.rank === 1 ? ' rank-1' : ''}">${p.rank === 999 ? '—' : p.rank}</td>
+          <td>${p.avg}</td>
+          <td>${p.crGross}</td><td>${p.crNet}</td>
+        </tr>`;
+      });
+      html += `</tbody></table>`;
+      tableEl.innerHTML = html;
+    }
+
+    const sortBtns = makeSortButtons(
+      [
+        { label: 'By Rank', key: 'rank' },
+        { label: 'By Name', key: 'name' },
+        { label: 'Weekly Points', key: 'wklyPts' },
+        { label: 'Total Points', key: 'totalPts' }
+      ],
+      (key, dir) => renderIndTable(key, dir)
+    );
+    wrap.appendChild(sortBtns);
+    wrap.appendChild(tableEl);
+    renderIndTable('rank', 1);
+    return wrap;
   }
 
-  let indHTML = buildIndTable(ftRows, '');
+  const indWrap = document.getElementById('indStatsTable');
+  indWrap.innerHTML = '';
+  indWrap.appendChild(buildIndTable(ftRows, false));
+
   if (subRows.length) {
-    indHTML += `<div style="margin-top:16px;">` + buildIndTable(subRows, 'Substitutes') + `</div>`;
+    const subLabel = document.createElement('div');
+    subLabel.style.cssText = `font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;
+      color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin:20px 0 8px;`;
+    subLabel.textContent = 'Substitutes';
+    indWrap.appendChild(subLabel);
+    const subTableWrap = document.createElement('div');
+    subTableWrap.className = 'table-wrap';
+    subTableWrap.appendChild(buildIndTable(subRows, true));
+    indWrap.appendChild(subTableWrap);
   }
-  document.getElementById('indStatsTable').innerHTML = indHTML;
 
   // ── THIS WEEK'S PAIRS ──
   // Team breakdown: rows 33–56 (0-based), cols B–F (1–5)
@@ -650,14 +757,24 @@ function buildCareer(rows) {
   const hdrNet    = rows[30] || [];
   const dataNet   = rows.slice(31, 54).filter(r => r[1] && r[1].trim());
 
-  function buildCareerTable(parRow, dataRows, label) {
-    // Hole cols: C–K = 2–10 (holes 1–9 + OUT), skip col L(11=empty), M–V = 12–21 (10–18 + IN), W=22(TOT), X=23(rank)
-    const holeCols = [2,3,4,5,6,7,8,9,10]; // 1-9
-    const outCol   = 10;
-    const backCols = [12,13,14,15,16,17,18,19,20]; // 10-18
-    const inCol    = 21;
-    const totCol   = 22;
-    const rankCol  = 23;
+  function buildCareerTable(parRow, hdrRow, dataRows, label) {
+    // Auto-detect column positions from the header row
+    // Header row has: blank, "Career Gross"/"Career Net", 1,2,3,...,9,OUT,(blank),10,11,...,18,IN,TOT,Com. Score,Rank
+    let holeCols = [];  // indices for holes 1-9
+    let outCol = null;
+    let backCols = []; // indices for holes 10-18
+    let inCol = null, totCol = null, rankCol = null;
+
+    for (let c = 2; c < hdrRow.length; c++) {
+      const val = (hdrRow[c] || '').toString().trim();
+      if (val === 'OUT') { outCol = c; continue; }
+      if (val === 'IN')  { inCol  = c; continue; }
+      if (val === 'TOT') { totCol = c; continue; }
+      if (val === 'Rank'|| val === 'rank') { rankCol = c; continue; }
+      const n = parseInt(val);
+      if (!isNaN(n) && n >= 1 && n <= 9  && holeCols.length < 9)  holeCols.push(c);
+      if (!isNaN(n) && n >= 10 && n <= 18 && backCols.length < 9) backCols.push(c);
+    }
 
     const holeNums = ['1','2','3','4','5','6','7','8','9'];
     const backNums = ['10','11','12','13','14','15','16','17','18'];
@@ -698,7 +815,9 @@ function buildCareer(rows) {
     sorted.forEach(r => {
       const rank    = r[rankCol] ? Math.round(parseFloat(r[rankCol])) : null;
       const tot     = r[totCol] || '';
-      const incomplete = backCols.some(c => r[c] === '0' || r[c] === '');
+      // Incomplete = no rank assigned (rank col empty) OR all back 9 are 0
+      const hasRank = r[rankCol] && r[rankCol].toString().trim() !== '';
+      const incomplete = !hasRank;
       const nameDisplay = r[1] + (incomplete ? ' *' : '');
 
       html += `<tr>
@@ -716,8 +835,8 @@ function buildCareer(rows) {
     return html;
   }
 
-  const grossHTML = buildCareerTable(parGross, dataGross, 'Career Gross');
-  const netHTML   = buildCareerTable(parNet,   dataNet,   'Career Net');
+  const grossHTML = buildCareerTable(parGross, hdrGross, dataGross, 'Career Gross');
+  const netHTML   = buildCareerTable(parNet,   hdrNet,   dataNet,   'Career Net');
 
   document.getElementById('careerTables').innerHTML = grossHTML + netHTML;
 }
