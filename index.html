@@ -51,6 +51,26 @@
     .logo {
       display: flex;
       align-items: center;
+      gap: 12px;
+    }
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .logo-main {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 24px;
+      color: var(--gold);
+      letter-spacing: 2px;
+    }
+    .logo-sub {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--gray-mid);
+      letter-spacing: 3px;
+      text-transform: uppercase;
     }
     nav {
       display: flex;
@@ -360,6 +380,7 @@
         padding: 8px 0;
       }
       .logo img { height: 50px; }
+      .logo-text { display: none; }
       .week-badge {
         font-size: 11px;
         padding: 3px 10px;
@@ -415,6 +436,10 @@
   <div class="header-inner">
     <div class="logo">
       <img src="TNFLeague_Logo.png" alt="Thursday Night Fun League" style="height:62px;width:auto;display:block;">
+      <div class="logo-text">
+        <span class="logo-main">Thursday Night</span>
+        <span class="logo-sub">Fun League</span>
+      </div>
     </div>
     <nav>
       <button class="active" onclick="showPage('summary')">Standings</button>
