@@ -265,10 +265,10 @@
     .pair-net {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
-      color: var(--green);
+      color: var(--text);
       font-size: 14px;
     }
-    .pair-net.over { color: #c0392b; }
+    .pair-net.under { color: #c0392b; }
 
     /* ── CAREER TABLES ── */
     .career-wrap {
@@ -692,13 +692,14 @@ function buildSummary(rows) {
     if (isSub) {
       // Subs: just HC columns + rounds, no sort buttons
       let html = `<table><thead><tr>
-        <th>Name</th><th>W1 HC</th><th>Curr HC</th><th>Next HC</th><th>Rounds</th>
+        <th>Name</th><th>W1 HC</th><th>Curr HC</th><th>Next HC</th><th>Rounds</th><th>Avg</th>
       </tr></thead><tbody>`;
       [...data].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
         html += `<tr>
           <td>${p.name}</td>
           <td>${p.w1hc}</td><td>${p.currHc}</td><td>${p.nextHc}</td>
           <td>${p.roundsRaw}</td>
+          <td>${p.avg}</td>
         </tr>`;
       });
       html += `</tbody></table>`;
@@ -809,11 +810,20 @@ function buildSummary(rows) {
       <div class="pair-body">`;
     pair.players.forEach(p => {
       const net = parseInt(p.net);
-      const netStr = isNaN(net) ? p.net : (net <= 0 ? net : `+${net}`);
-      const overClass = net > 0 ? ' over' : '';
+      let netStr, netClass;
+      if (isNaN(net) || p.net === '') {
+        netStr = ''; netClass = '';
+      } else if (net < 0) {
+        netStr = `${net}`;  // already has minus sign
+        netClass = ' under';
+      } else if (net === 0) {
+        netStr = 'E'; netClass = '';
+      } else {
+        netStr = `+${net}`; netClass = '';
+      }
       pairsHTML += `<div class="pair-player">
         <span class="pair-name">${p.name}</span>
-        <span class="pair-net${overClass}">${netStr || ''}</span>
+        <span class="pair-net${netClass}">${netStr}</span>
       </div>`;
     });
     pairsHTML += `</div></div>`;
