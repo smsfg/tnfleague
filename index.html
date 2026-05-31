@@ -682,7 +682,7 @@ function buildSummary(rows) {
       totalPts:  parseFloat(r[20]) || 0,
       totalRaw:  r[20] || '—',
       rank:      parseInt(r[21]) || 999,
-      avg:       r[22] || '—',
+      avg:       isSub ? (r[19] || '—') : (r[22] || '—'),
       crGross:   r[23] || '—',
       crNet:     r[24] || '—',
     }));
