@@ -166,7 +166,8 @@
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
       color: var(--green-dark);
-      white-space: nowrap;
+      width: 40px;
+      max-width: 40px;
     }
     .rank-1 { color: var(--gold); }
 
@@ -864,66 +865,81 @@ function buildCareer(rows) {
       return val;
     }
 
-    let html = `
-      <div class="career-label">${label}</div>
-      <div class="table-wrap">
-      <table>
-        <thead>
-          <tr class="hole-header">
-            <th>Player</th>
-            ${holeNums.map(h => `<th>${h}</th>`).join('')}
-            <th>OUT</th>
-            ${backNums.map(h => `<th>${h}</th>`).join('')}
-            <th>IN</th>
-            <th>TOT</th>
-            <th>Rank</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="par-row">
-            <td>Par</td>
-            ${holeCols.map(c => `<td>${parRow[c] || ''}</td>`).join('')}
-            <td>${parRow[outCol] || ''}</td>
-            ${backCols.map(c => `<td>${parRow[c] || ''}</td>`).join('')}
-            <td>${parRow[inCol] || ''}</td>
-            <td>${parRow[totCol] || ''}</td>
-            <td></td>
-          </tr>`;
-
-    // Sort by rank
-    const sorted = [...dataRows].sort((a, b) => {
-      const ra = parseFloat(a[rankCol]) || 999;
-      const rb = parseFloat(b[rankCol]) || 999;
-      return ra - rb;
-    });
-
-    sorted.forEach(r => {
-      const rank    = r[rankCol] ? Math.round(parseFloat(r[rankCol])) : null;
-      const tot     = r[totCol] || '';
-      // Incomplete = no rank assigned (rank col empty) OR all back 9 are 0
-      const hasRank = r[rankCol] && r[rankCol].toString().trim() !== '';
-      const incomplete = !hasRank;
-      const nameDisplay = r[1] + (incomplete ? ' *' : '');
-
-      html += `<tr>
-        <td>${nameDisplay}</td>
-        ${holeCols.map(c  => `<td>${scoreCell(r[c], c)}</td>`).join('')}
-        <td class="subtotal">${r[outCol] || ''}</td>
-        ${backCols.map(c  => `<td>${r[c] === '0' ? '—' : scoreCell(r[c], c)}</td>`).join('')}
-        <td class="subtotal">${r[inCol] === '0' || !r[inCol] ? '—' : r[inCol]}</td>
-        <td class="total-col">${tot || '—'}</td>
-        <td class="rank-cell${rank === 1 ? ' rank-1' : ''}">${rank || '—'}</td>
+    function buildRows(sortedData) {
+      let html = `<tr class="par-row">
+        <td>Par</td>
+        ${holeCols.map(c => `<td>${parRow[c] || ''}</td>`).join('')}
+        <td>${parRow[outCol] || ''}</td>
+        ${backCols.map(c => `<td>${parRow[c] || ''}</td>`).join('')}
+        <td>${parRow[inCol] || ''}</td>
+        <td>${parRow[totCol] || ''}</td>
+        <td></td>
       </tr>`;
-    });
+      sortedData.forEach(r => {
+        const rank = r[rankCol] ? Math.round(parseFloat(r[rankCol])) : null;
+        const tot  = r[totCol] || '';
+        const hasRank = r[rankCol] && r[rankCol].toString().trim() !== '';
+        const nameDisplay = r[1] + (!hasRank ? ' *' : '');
+        html += `<tr>
+          <td>${nameDisplay}</td>
+          ${holeCols.map(c => `<td>${scoreCell(r[c], c)}</td>`).join('')}
+          <td class="subtotal">${r[outCol] || ''}</td>
+          ${backCols.map(c => `<td>${r[c] === '0' ? '—' : scoreCell(r[c], c)}</td>`).join('')}
+          <td class="subtotal">${r[inCol] === '0' || !r[inCol] ? '—' : r[inCol]}</td>
+          <td class="total-col">${tot || '—'}</td>
+          <td class="rank-cell${rank === 1 ? ' rank-1' : ''}">${rank || '—'}</td>
+        </tr>`;
+      });
+      return html;
+    }
 
-    html += `</tbody></table></div>`;
-    return html;
+    const thead = `<thead><tr class="hole-header">
+      <th>Player</th>
+      ${holeNums.map(h => `<th>${h}</th>`).join('')}
+      <th>OUT</th>
+      ${backNums.map(h => `<th>${h}</th>`).join('')}
+      <th>IN</th><th>TOT</th><th>Rank</th>
+    </tr></thead>`;
+
+    const wrap = document.createElement('div');
+
+    const labelEl = document.createElement('div');
+    labelEl.className = 'career-label';
+    labelEl.textContent = label;
+    wrap.appendChild(labelEl);
+
+    const tableWrap = document.createElement('div');
+    tableWrap.className = 'table-wrap';
+    tableWrap.innerHTML = `<table>${thead}<tbody id="tbody-${label.replace(' ','_')}"></tbody></table>`;
+
+    function renderCareerRows(sortKey, sortDir) {
+      const sorted = [...dataRows].sort((a, b) => {
+        if (sortKey === 'name') return sortDir * (a[1] || '').localeCompare(b[1] || '');
+        const ra = parseFloat(a[rankCol]) || 999;
+        const rb = parseFloat(b[rankCol]) || 999;
+        return ra - rb;
+      });
+      tableWrap.querySelector('tbody').innerHTML = buildRows(sorted);
+    }
+
+    const sortBtns = makeSortButtons(
+      [
+        { label: 'By Rank', key: 'rank' },
+        { label: 'By Name', key: 'name' }
+      ],
+      (key, dir) => renderCareerRows(key, dir)
+    );
+
+    wrap.appendChild(sortBtns);
+    wrap.appendChild(tableWrap);
+    renderCareerRows('rank', 1);
+    return wrap;
   }
 
-  const grossHTML = buildCareerTable(parGross, hdrGross, dataGross, 'Career Gross', true);
-  const netHTML   = buildCareerTable(parNet,   hdrNet,   dataNet,   'Career Net',   true);
-
-  document.getElementById('careerTables').innerHTML = grossHTML + netHTML;
+  const careerEl = document.getElementById('careerTables');
+  careerEl.innerHTML = '';
+  careerEl.appendChild(buildCareerTable(parGross, hdrGross, dataGross, 'Career Gross', true));
+  careerEl.appendChild(buildCareerTable(parNet,   hdrNet,   dataNet,   'Career Net',   true));
 }
 
 // ══════════════════════════════════════════
