@@ -273,10 +273,13 @@
 
     /* ── STICKY FIRST COLUMN ── */
     .table-wrap {
-      overflow-x: auto;
+      overflow-x: visible;
       -webkit-overflow-scrolling: touch;
       border-radius: 8px;
       box-shadow: 0 1px 8px rgba(0,0,0,0.08);
+    }
+    @media (max-width: 900px) {
+      .table-wrap { overflow-x: auto; }
     }
     /* Freeze first column */
     table tbody td:first-child,
