@@ -809,9 +809,17 @@ function buildSummary(rows) {
       </div>
       <div class="pair-body">`;
     pair.players.forEach(p => {
-      const net = parseInt(p.net);
+      // Excel may export negative numbers as (3) instead of -3
+      let rawNet = (p.net || '').toString().trim();
+      let net;
+      if (/^\([\d.]+\)$/.test(rawNet)) {
+        net = -parseFloat(rawNet.replace(/[()]/g, ''));
+      } else {
+        net = parseFloat(rawNet);
+      }
+
       let netStr, netClass;
-      if (isNaN(net) || p.net === '') {
+      if (isNaN(net) || rawNet === '') {
         netStr = ''; netClass = '';
       } else if (net < 0) {
         netStr = `${net}`;  // already has minus sign
@@ -819,7 +827,7 @@ function buildSummary(rows) {
       } else if (net === 0) {
         netStr = 'E'; netClass = '';
       } else {
-        netStr = `+${net}`; netClass = '';
+        netStr = `+${Math.round(net)}`; netClass = '';
       }
       pairsHTML += `<div class="pair-player">
         <span class="pair-name">${p.name}</span>
