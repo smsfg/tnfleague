@@ -166,8 +166,23 @@
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
       color: var(--green-dark);
-      width: 40px;
-      max-width: 40px;
+      width: 36px;
+      max-width: 36px;
+      padding-left: 4px !important;
+      padding-right: 4px !important;
+    }
+    th.rank-header {
+      width: 36px;
+      max-width: 36px;
+      padding-left: 4px !important;
+      padding-right: 4px !important;
+    }
+    @media (max-width: 640px) {
+      .rank-cell, th.rank-header {
+        width: 28px;
+        max-width: 28px;
+        font-size: 11px;
+      }
     }
     .rank-1 { color: var(--gold); }
 
@@ -608,7 +623,7 @@ function buildSummary(rows) {
     });
 
     let html = `<table><thead><tr>
-      <th>Rank</th><th>Name</th>
+      <th class="rank-header">Rank</th><th>Name</th>
       ${weekCols.map(w => `<th>${w.label}</th>`).join('')}
       <th>Total</th>
     </tr></thead><tbody>`;
@@ -705,7 +720,7 @@ function buildSummary(rows) {
         <th>Name</th>
         <th>W1 HC</th><th>Curr HC</th><th>Next HC</th>
         <th>Rnds</th><th>Wkly Pts</th><th>Total Pts</th>
-        <th>Ind Rank</th><th>Avg</th>
+        <th class="rank-header">Ind Rank</th><th>Avg</th>
         <th>CR Gross</th><th>CR Net</th>
       </tr></thead><tbody>`;
       sorted.forEach(p => {
@@ -898,7 +913,7 @@ function buildCareer(rows) {
       ${holeNums.map(h => `<th>${h}</th>`).join('')}
       <th>OUT</th>
       ${backNums.map(h => `<th>${h}</th>`).join('')}
-      <th>IN</th><th>TOT</th><th>Rank</th>
+      <th>IN</th><th>TOT</th><th class="rank-header">Rank</th>
     </tr></thead>`;
 
     const wrap = document.createElement('div');
