@@ -623,14 +623,14 @@ function buildSummary(rows) {
     });
 
     let html = `<table><thead><tr>
-      <th class="rank-header">Rank</th><th>Name</th>
+      <th>Name</th><th class="rank-header">Rank</th>
       ${weekCols.map(w => `<th>${w.label}</th>`).join('')}
       <th>Total</th>
     </tr></thead><tbody>`;
     sorted.forEach(p => {
       html += `<tr>
-        <td class="rank-cell${p.rank === 1 ? ' rank-1' : ''}">${p.rank}</td>
         <td>${p.name}</td>
+        <td class="rank-cell${p.rank === 1 ? ' rank-1' : ''}">${p.rank}</td>
         ${p.weeksRaw.map(w => `<td>${w || '—'}</td>`).join('')}
         <td class="total-col">${p.totalRaw}</td>
       </tr>`;
