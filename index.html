@@ -286,6 +286,9 @@
       z-index: 2;
       background: inherit;
     }
+    /* Wider name column, no wrapping */
+    table tbody td:first-child,
+    table thead th:first-child { min-width: 140px; white-space: nowrap; }
     thead th:first-child {
       background: var(--green-dark);
       z-index: 3;
@@ -336,7 +339,7 @@
         gap: 6px;
         padding: 8px 0;
       }
-      .logo img { height: 40px; }
+      .logo img { height: 50px; }
       .week-badge {
         font-size: 11px;
         padding: 3px 10px;
@@ -359,7 +362,7 @@
       table { font-size: 11px; min-width: max-content; }
       thead th, tbody td { padding: 6px 8px; }
       thead th:first-child,
-      tbody td:first-child { padding-left: 10px; min-width: 90px; max-width: 110px; }
+      tbody td:first-child { padding-left: 10px; min-width: 120px; max-width: 140px; }
 
       /* Score cell circles/squares scale down */
       .score-cell { width: 20px; height: 20px; }
@@ -382,7 +385,7 @@
       table { font-size: 10px; }
       thead th, tbody td { padding: 5px 6px; }
       thead th:first-child,
-      tbody td:first-child { min-width: 80px; }
+      tbody td:first-child { min-width: 110px; }
     }
   </style>
 </head>
@@ -391,7 +394,7 @@
 <header>
   <div class="header-inner">
     <div class="logo">
-      <img src="TNFLeague_Logo.png" alt="Thursday Night Fun League" style="height:52px;width:auto;display:block;">
+      <img src="TNFLeague_Logo.png" alt="Thursday Night Fun League" style="height:62px;width:auto;display:block;">
     </div>
     <nav>
       <button class="active" onclick="showPage('summary')">Standings</button>
