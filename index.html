@@ -890,6 +890,25 @@ function buildCareer(rows) {
       tableWrap.querySelector('tbody').innerHTML = buildRows(sortedComplete, sortedIncomplete);
     }
 
+    const thead = `<thead><tr class="hole-header">
+      <th>Player</th>
+      ${holeNums.map(h => `<th>${h}</th>`).join('')}
+      <th>OUT</th>
+      ${backNums.map(h => `<th>${h}</th>`).join('')}
+      <th>IN</th><th>TOT</th><th class="rank-header">Rank</th>
+    </tr></thead>`;
+
+    const wrap = document.createElement('div');
+    const labelEl = document.createElement('div');
+    labelEl.className = 'career-label';
+    labelEl.textContent = label;
+    wrap.appendChild(labelEl);
+
+    const tableWrap = document.createElement('div');
+    tableWrap.className = 'table-wrap';
+    const tbodyId = `tbody-${label.replace(/\s/g,'_')}`;
+    tableWrap.innerHTML = `<table>${thead}<tbody id="${tbodyId}"></tbody></table>`;
+
     const sortBtns = makeSortButtons(
       [{ label:'By Rank', key:'rank' }, { label:'By Name', key:'name' }],
       renderCareerRows
