@@ -954,9 +954,11 @@ function buildSkins(rows) {
 
   function renderSkinsTable(sortKey, sortDir) {
     const sorted = [...skinsData].sort((a, b) => {
-      if (sortKey === 'name')    return sortDir * a.name.localeCompare(b.name);
-      if (sortKey === 'net')     return sortDir * (b.net - a.net);
-      if (sortKey === 'skins')   return sortDir * (b.skins - a.skins);
+      if (sortKey === 'name')       return sortDir * a.name.localeCompare(b.name);
+      if (sortKey === 'net')        return sortDir * (b.net - a.net);
+      if (sortKey === 'skins')      return sortDir * (b.skins - a.skins);
+      if (sortKey === 'lowHole')    return sortDir * (b.tiedLow - a.tiedLow);
+      if (sortKey === 'closeCalls') return sortDir * (b.closeCalls - a.closeCalls);
       // Default: by skins $ desc
       return b.skinsD - a.skinsD;
     });
@@ -990,7 +992,8 @@ function buildSkins(rows) {
 
   const sortBtns = makeSortButtons(
     [{ label:'By Skins $', key:'skinsD' }, { label:'By Skins', key:'skins' },
-     { label:'By Net', key:'net' }, { label:'By Name', key:'name' }],
+     { label:'By Net', key:'net' }, { label:'Low Hole', key:'lowHole' },
+     { label:'Close Calls', key:'closeCalls' }, { label:'By Name', key:'name' }],
     renderSkinsTable
   );
   skinsWrap.appendChild(sortBtns);
