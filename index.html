@@ -780,7 +780,22 @@ function buildCareer(rows) {
   const hdrNet    = rows[30] || [];
   const dataNet   = rows.slice(31, 54).filter(r => r[1] && r[1].trim());
 
-  function buildCareerTable(parRow, hdrRow, dataRows, label, isGross) {
+  // Determine which players are incomplete from the Gross sheet (source of truth)
+  // Parse gross back cols to find incomplete players by name
+  let grossBackCols = [];
+  const hdrGrossRow = hdrGross;
+  for (let c = 2; c < hdrGrossRow.length; c++) {
+    const val = (hdrGrossRow[c] || '').toString().trim();
+    const n = parseInt(val);
+    if (!isNaN(n) && n >= 10 && n <= 18 && grossBackCols.length < 9) grossBackCols.push(c);
+  }
+  const incompleteNames = new Set(
+    dataGross
+      .filter(r => !grossBackCols.some(c => { const v = parseInt(r[c]); return !isNaN(v) && v > 0; }))
+      .map(r => r[1])
+  );
+
+  function buildCareerTable(parRow, hdrRow, dataRows, label, isGross, incompleteNames) {
     let holeCols = [], outCol = null, backCols = [], inCol = null, totCol = null;
     for (let c = 2; c < hdrRow.length; c++) {
       const val = (hdrRow[c] || '').toString().trim();
@@ -808,16 +823,10 @@ function buildCareer(rows) {
       return val;
     }
 
-    // ── Recalculate rank from TOT — only for complete rounds ──
-    // A complete round = has at least one non-zero score in the back 9
-    const validRows = dataRows.filter(r => r[1] && r[1].trim());
-    const isComplete = (r) => backCols.some(c => {
-      const v = parseInt(r[c]);
-      return !isNaN(v) && v > 0;
-    });
-
-    const completeRows   = validRows.filter(r => isComplete(r));
-    const incompleteRows = validRows.filter(r => !isComplete(r));
+    // Use gross-derived incomplete set as source of truth for both tables
+    const validRows      = dataRows.filter(r => r[1] && r[1].trim());
+    const completeRows   = validRows.filter(r => !incompleteNames.has(r[1]));
+    const incompleteRows = validRows.filter(r =>  incompleteNames.has(r[1]));
 
     const withTot = completeRows.map(r => ({ r, tot: parseFloat(r[totCol]) || null }));
     const ranked = [...withTot].sort((a, b) => {
@@ -921,8 +930,8 @@ function buildCareer(rows) {
 
   const careerEl = document.getElementById('careerTables');
   careerEl.innerHTML = '';
-  careerEl.appendChild(buildCareerTable(parGross, hdrGross, dataGross, 'Career Gross', true));
-  careerEl.appendChild(buildCareerTable(parNet,   hdrNet,   dataNet,   'Career Net',   true));
+  careerEl.appendChild(buildCareerTable(parGross, hdrGross, dataGross, 'Career Gross', true,  incompleteNames));
+  careerEl.appendChild(buildCareerTable(parNet,   hdrNet,   dataNet,   'Career Net',   true,  incompleteNames));
 }
 
 // ══════════════════════════════════════════
