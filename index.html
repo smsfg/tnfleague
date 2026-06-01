@@ -8,9 +8,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --green: #2d6a2d;
-      --green-dark: #1a3f1a;
-      --green-light: #3d8c3d;
+      --navy: #2d4a7a;
+      --navy-dark: #1a2a4a;
+      --navy-light: #3d5fa0;
       --gold: #c9a84c;
       --gold-light: #e8c96a;
       --cream: #f5f0e8;
@@ -26,14 +26,14 @@
 
     body {
       font-family: 'Barlow', sans-serif;
-      background: var(--green-dark);
+      background: var(--navy-dark);
       color: var(--text);
       min-height: 100vh;
     }
 
     /* ── HEADER ── */
     header {
-      background: var(--green-dark);
+      background: var(--navy-dark);
       border-bottom: 3px solid var(--gold);
       padding: 0 24px;
       position: sticky;
@@ -98,7 +98,7 @@
       font-size: 12px;
       font-weight: 600;
       letter-spacing: 1px;
-      color: var(--green-dark);
+      color: var(--navy-dark);
       background: var(--gold);
       padding: 4px 12px;
       border-radius: 20px;
@@ -120,22 +120,20 @@
     }
 
     /* ── SECTION HEADERS ── */
-    .section {
-      margin-bottom: 40px;
-    }
+    .section { margin-bottom: 40px; }
     .section-header {
       display: flex;
       align-items: baseline;
       gap: 12px;
       margin-bottom: 16px;
       padding-bottom: 10px;
-      border-bottom: 2px solid var(--green);
+      border-bottom: 2px solid var(--navy);
       width: 100%;
     }
     .section-title {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 22px;
-      color: var(--green-dark);
+      color: var(--navy-dark);
       letter-spacing: 1.5px;
     }
     .section-subtitle {
@@ -154,7 +152,7 @@
       font-size: 13px;
     }
     thead tr {
-      background: var(--green-dark);
+      background: var(--navy-dark);
       color: var(--gold);
     }
     thead th {
@@ -178,14 +176,14 @@
     }
     tbody td:first-child { text-align: left; padding-left: 16px; font-weight: 600; }
 
-    /* Alternating row tints */
+    /* Alternating rows */
     tbody tr:nth-child(even) { background: var(--gray-light); }
     tbody tr:nth-child(even):hover { background: #ede9e1; }
 
     .rank-cell {
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
-      color: var(--green-dark);
+      color: var(--navy-dark);
       width: 36px;
       max-width: 36px;
       padding-left: 4px !important;
@@ -198,17 +196,13 @@
       padding-right: 4px !important;
     }
     @media (max-width: 640px) {
-      .rank-cell, th.rank-header {
-        width: 28px;
-        max-width: 28px;
-        font-size: 11px;
-      }
+      .rank-cell, th.rank-header { width: 28px; max-width: 28px; font-size: 11px; }
     }
     .rank-1 { color: var(--gold); }
 
-    /* Par row styling */
+    /* Par row */
     .par-row td {
-      background: var(--green-dark) !important;
+      background: var(--navy-dark) !important;
       color: var(--gold) !important;
       font-family: 'Barlow Condensed', sans-serif;
       font-weight: 700;
@@ -219,24 +213,18 @@
 
     /* Hole header row */
     .hole-header th {
-      background: var(--green);
+      background: var(--navy);
       color: var(--cream);
       font-size: 11px;
     }
 
-    /* OUT/IN/TOT emphasis */
-    .subtotal { background: rgba(45,106,45,0.07) !important; font-weight: 700 !important; white-space: nowrap; }
-    .total-col { font-weight: 700 !important; color: var(--green-dark) !important; white-space: nowrap; }
-    /* Incomplete flag */
-    .incomplete {
-      font-size: 10px;
-      color: var(--gray-dark);
-      font-style: italic;
-    }
+    /* Subtotals */
+    .subtotal { background: rgba(45,74,122,0.07) !important; font-weight: 700 !important; white-space: nowrap; }
+    .total-col { font-weight: 700 !important; color: var(--navy-dark) !important; white-space: nowrap; }
 
-    /* Career round score markers */
+    /* Career score markers */
     .score-cell { position: relative; display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; }
-    .birdie { border: 2px solid #2d6a2d; border-radius: 50%; }
+    .birdie { border: 2px solid var(--navy); border-radius: 50%; }
     .bogey  { border: 2px solid #c0392b; }
 
     /* ── WEEK RESULTS GRID ── */
@@ -252,7 +240,7 @@
       box-shadow: 0 1px 6px rgba(0,0,0,0.07);
     }
     .pair-header {
-      background: var(--green-dark);
+      background: var(--navy-dark);
       padding: 8px 14px;
       display: flex;
       justify-content: space-between;
@@ -282,23 +270,14 @@
     }
     .pair-player:last-child { border-bottom: none; }
     .pair-name { font-weight: 600; color: var(--text); }
-    .pair-net {
-      font-family: 'Barlow Condensed', sans-serif;
-      font-weight: 700;
-      color: var(--text);
-      font-size: 14px;
-    }
+    .pair-net { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; color: var(--text); font-size: 14px; }
     .pair-net.under { color: #c0392b; }
 
     /* ── CAREER TABLES ── */
-    .career-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-    }
+    .career-wrap { display: flex; flex-direction: column; gap: 32px; }
     .career-label {
       display: inline-block;
-      background: var(--green-dark);
+      background: var(--navy-dark);
       color: var(--gold);
       font-family: 'Bebas Neue', sans-serif;
       font-size: 16px;
@@ -308,6 +287,28 @@
       margin-bottom: 10px;
     }
 
+    /* ── SKINS ── */
+    .skins-net-pos { color: #2d7a2d; font-weight: 700; }
+    .skins-net-neg { color: #c0392b; font-weight: 700; }
+    .skins-definitions {
+      margin-top: 20px;
+      padding: 14px 18px;
+      background: var(--white);
+      border-radius: 8px;
+      border-left: 3px solid var(--navy);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+    }
+    .skins-definitions p {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.7;
+    }
+    .skins-definitions strong {
+      color: var(--navy-dark);
+      font-style: normal;
+    }
+
     /* ── STICKY FIRST COLUMN ── */
     .table-wrap {
       overflow-x: visible;
@@ -315,10 +316,8 @@
       border-radius: 8px;
       box-shadow: 0 1px 8px rgba(0,0,0,0.08);
     }
-    @media (max-width: 900px) {
-      .table-wrap { overflow-x: auto; }
-    }
-    /* Freeze first column */
+    @media (max-width: 900px) { .table-wrap { overflow-x: auto; } }
+
     table tbody td:first-child,
     table thead th:first-child {
       position: sticky;
@@ -326,20 +325,16 @@
       z-index: 2;
       background: inherit;
     }
-    /* Wider name column, no wrapping */
     table tbody td:first-child,
     table thead th:first-child { min-width: 140px; white-space: nowrap; }
-    thead th:first-child {
-      background: var(--green-dark);
-      z-index: 3;
-    }
+    thead th:first-child { background: var(--navy-dark); z-index: 3; }
     tbody tr:nth-child(even) td:first-child { background: var(--gray-light); }
     tbody tr:nth-child(odd)  td:first-child { background: var(--white); }
     tbody tr:hover td:first-child           { background: #f8f5ef; }
     tbody tr:nth-child(even):hover td:first-child { background: #ede9e1; }
-    .par-row td:first-child { background: var(--green-dark) !important; }
+    .par-row td:first-child { background: var(--navy-dark) !important; }
 
-    /* ── LOADING ── */
+    /* ── LOADING / ERROR ── */
     .loading-msg {
       text-align: center;
       padding: 60px 24px;
@@ -348,16 +343,11 @@
       font-size: 16px;
       letter-spacing: 1px;
     }
-    .error-msg {
-      text-align: center;
-      padding: 40px 24px;
-      color: #c0392b;
-      font-size: 13px;
-    }
+    .error-msg { text-align: center; padding: 40px 24px; color: #c0392b; font-size: 13px; }
 
     /* ── FOOTER ── */
     footer {
-      background: var(--green-dark);
+      background: var(--navy-dark);
       border-top: 2px solid var(--gold);
       padding: 16px 24px;
       text-align: center;
@@ -372,61 +362,31 @@
 
     /* ── RESPONSIVE ── */
     @media (max-width: 640px) {
-      /* Header */
-      .header-inner {
-        height: auto;
-        flex-wrap: wrap;
-        gap: 6px;
-        padding: 8px 0;
-      }
+      .header-inner { height: auto; flex-wrap: wrap; gap: 6px; padding: 8px 0; }
       .logo img { height: 50px; }
       .logo-text { display: none; }
       .week-badge {
-        font-size: 11px;
-        padding: 3px 10px;
-        order: 3;
-        width: 100%;
-        text-align: center;
-        border-radius: 0;
-        background: rgba(201,168,76,0.15);
-        color: var(--gold);
+        font-size: 11px; padding: 3px 10px; order: 3; width: 100%;
+        text-align: center; border-radius: 0;
+        background: rgba(201,168,76,0.15); color: var(--gold);
       }
       nav { order: 2; }
       nav button { padding: 5px 10px; font-size: 12px; }
-
-      /* Page */
       .page-inner { padding: 16px 12px 48px; }
       .section { margin-bottom: 28px; }
       .section-title { font-size: 18px; }
-
-      /* Tables — smaller text, let them scroll */
       table { font-size: 11px; min-width: max-content; }
       thead th, tbody td { padding: 6px 8px; }
-      thead th:first-child,
-      tbody td:first-child { padding-left: 10px; min-width: 120px; max-width: 140px; }
-
-      /* Score cell circles/squares scale down */
+      thead th:first-child, tbody td:first-child { padding-left: 10px; min-width: 120px; max-width: 140px; }
       .score-cell { width: 20px; height: 20px; }
-
-      /* Sort buttons wrap nicely */
-      div[style*="display:flex;gap:6px"] {
-        flex-wrap: wrap;
-      }
-
-      /* Pair cards — single column */
-      .pairs-grid {
-        grid-template-columns: 1fr;
-      }
-
-      /* Career label */
+      div[style*="display:flex;gap:6px"] { flex-wrap: wrap; }
+      .pairs-grid { grid-template-columns: 1fr; }
       .career-label { font-size: 14px; }
     }
-
     @media (max-width: 400px) {
       table { font-size: 10px; }
       thead th, tbody td { padding: 5px 6px; }
-      thead th:first-child,
-      tbody td:first-child { min-width: 110px; }
+      thead th:first-child, tbody td:first-child { min-width: 110px; }
     }
   </style>
 </head>
@@ -442,8 +402,9 @@
       </div>
     </div>
     <nav>
-      <button class="active" onclick="showPage('summary')">Standings</button>
-      <button onclick="showPage('career')">Career Round</button>
+      <button class="active" onclick="showPage('summary', this)">Standings</button>
+      <button onclick="showPage('career', this)">Career Round</button>
+      <button onclick="showPage('skins', this)">Skins</button>
     </nav>
     <div class="week-badge" id="weekBadge">Loading...</div>
   </div>
@@ -453,40 +414,27 @@
   <!-- ══════════ SUMMARY PAGE ══════════ -->
   <div class="page active" id="page-summary">
     <div class="page-inner">
-
-      <!-- Blind Draw Standings -->
       <div class="section">
         <div class="section-header">
           <span class="section-title">Blind Draw Standings</span>
           <span class="section-subtitle" id="blindDrawSubtitle">Season points by week</span>
         </div>
-        <div class="table-wrap" id="blindDrawTable">
-          <div class="loading-msg">Loading standings...</div>
-        </div>
+        <div id="blindDrawTable"><div class="loading-msg">Loading standings...</div></div>
       </div>
-
-      <!-- Individual Stats -->
       <div class="section">
         <div class="section-header">
-          <span class="section-title">Individual Stats</span>
+          <span class="section-title">Individual Standings</span>
           <span class="section-subtitle">Handicaps · Points · Averages</span>
         </div>
-        <div class="table-wrap" id="indStatsTable">
-          <div class="loading-msg">Loading stats...</div>
-        </div>
+        <div id="indStatsTable"><div class="loading-msg">Loading standings...</div></div>
       </div>
-
-      <!-- This Week -->
       <div class="section">
         <div class="section-header">
           <span class="section-title">This Week's Results</span>
           <span class="section-subtitle" id="weekResultsLabel">Blind draw pairs &amp; scores</span>
         </div>
-        <div id="weekResultsGrid">
-          <div class="loading-msg">Loading results...</div>
-        </div>
+        <div id="weekResultsGrid"><div class="loading-msg">Loading results...</div></div>
       </div>
-
     </div>
   </div>
 
@@ -508,6 +456,29 @@
       </div>
     </div>
   </div>
+
+  <!-- ══════════ SKINS PAGE ══════════ -->
+  <div class="page" id="page-skins">
+    <div class="page-inner">
+      <div class="section">
+        <div class="section-header">
+          <span class="section-title">Skins</span>
+          <span class="section-subtitle">Season-to-date results</span>
+        </div>
+        <div id="skinsTable"><div class="loading-msg">Loading skins data...</div></div>
+        <div class="skins-definitions">
+          <p>
+            <strong>Weeks Played:</strong> Number of weeks the player has participated in skins (Paid ÷ $5).&nbsp;&nbsp;
+            <strong>Skins:</strong> Total number of skins won — outright low score on a hole with no ties.&nbsp;&nbsp;
+            <strong>Skins $:</strong> Total cash won from skins.&nbsp;&nbsp;
+            <strong>Net:</strong> Skins $ minus amount paid in — your profit or loss on the season.&nbsp;&nbsp;
+            <strong>Tied Low:</strong> Number of times you had the low score on a hole but tied with one or more others, so no skin was awarded.&nbsp;&nbsp;
+            <strong>Close Calls:</strong> Times you tied for low on a hole with just one other person — the narrowest miss.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
 </main>
 
 <footer>
@@ -515,32 +486,25 @@
 </footer>
 
 <script>
-// ══════════════════════════════════════════
-//  CONFIG — update spreadsheet/sheet IDs here
-// ══════════════════════════════════════════
-const SHEET_ID   = '18nSb4-SROWBz1zFkinrknAYCfZTv2wuLGcbPbWrlPfk';
+const SHEET_ID    = '18nSb4-SROWBz1zFkinrknAYCfZTv2wuLGcbPbWrlPfk';
 const SUMMARY_GID = '559224546';
 const CAREER_GID  = '553514996';
+const SKINS_GID   = '2126175510';
 
-// ══════════════════════════════════════════
-//  NAV
-// ══════════════════════════════════════════
-function showPage(name) {
+// ── NAV ──
+function showPage(name, btn) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
-  event.target.classList.add('active');
+  btn.classList.add('active');
 }
 
-// ══════════════════════════════════════════
-//  FETCH CSV
-// ══════════════════════════════════════════
+// ── CSV FETCH & PARSE ──
 async function fetchCSV(gid) {
   const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/export?format=csv&gid=${gid}`;
-  const res  = await fetch(url);
-  if (!res.ok) throw new Error('Failed to fetch sheet');
-  const text = await res.text();
-  return parseCSV(text);
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('Failed to fetch');
+  return parseCSV(await res.text());
 }
 
 function parseCSV(text) {
@@ -563,37 +527,27 @@ function parseCSV(text) {
   return rows;
 }
 
-// ══════════════════════════════════════════
-//  SORT HELPERS
-// ══════════════════════════════════════════
+// ── SORT BUTTONS ──
 function makeSortButtons(buttons, onSort) {
-  // buttons: [{label, key}]
-  let currentKey = buttons[0].key;
-  let currentDir = 1;
+  let currentKey = buttons[0].key, currentDir = 1;
   const wrap = document.createElement('div');
-  wrap.style.cssText = 'display:flex;gap:6px;margin-bottom:10px;';
+  wrap.style.cssText = 'display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;';
   buttons.forEach(btn => {
     const el = document.createElement('button');
     el.textContent = btn.label;
     el.dataset.key = btn.key;
     el.style.cssText = `font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;
       letter-spacing:1px;text-transform:uppercase;padding:5px 12px;border-radius:4px;cursor:pointer;
-      border:1px solid var(--green);background:var(--white);color:var(--green);transition:all 0.15s;`;
+      border:1px solid var(--navy);background:var(--white);color:var(--navy);transition:all 0.15s;`;
     el.addEventListener('click', () => {
-      if (currentKey === btn.key) { currentDir *= -1; }
-      else { currentKey = btn.key; currentDir = 1; }
-      wrap.querySelectorAll('button').forEach(b => {
-        b.style.background = 'var(--white)';
-        b.style.color = 'var(--green)';
-      });
-      el.style.background = 'var(--green-dark)';
-      el.style.color = 'var(--gold)';
+      if (currentKey === btn.key) { currentDir *= -1; } else { currentKey = btn.key; currentDir = 1; }
+      wrap.querySelectorAll('button').forEach(b => { b.style.background='var(--white)'; b.style.color='var(--navy)'; });
+      el.style.background = 'var(--navy-dark)'; el.style.color = 'var(--gold)';
       onSort(currentKey, currentDir);
     });
     wrap.appendChild(el);
   });
-  // Activate first button
-  wrap.querySelector('button').style.background = 'var(--green-dark)';
+  wrap.querySelector('button').style.background = 'var(--navy-dark)';
   wrap.querySelector('button').style.color = 'var(--gold)';
   return wrap;
 }
@@ -605,7 +559,6 @@ function buildSummary(rows) {
   const weekRow  = rows[0] || [];
   const dataRows = rows.slice(5, 28);
 
-  // Week number from col N (index 13) of row 0
   const weekNum = parseInt(weekRow[13]) || 1;
   const isSecondHalf = weekNum >= 9;
   const halfLabel = isSecondHalf ? '2nd Half' : '1st Half';
@@ -613,27 +566,28 @@ function buildSummary(rows) {
   document.getElementById('weekResultsLabel').textContent = `Week ${weekNum} blind draw pairs & scores`;
   document.getElementById('blindDrawSubtitle').textContent = `${halfLabel} points by week`;
 
-  // ── Week columns ──
+  // Week columns
   const weekCols = [];
   for (let c = 2; c <= 9; c++) {
     const label = (rows[4] || [])[c];
     if (!label) continue;
-    const hasData = dataRows.some(r => r[c] && r[c] !== '');
-    if (hasData) weekCols.push({ colIdx: c, label: `Wk ${label}` });
+    if (dataRows.some(r => r[c] && r[c] !== '')) weekCols.push({ colIdx: c, label: `Wk ${label}` });
   }
   const lastWeekCol = weekCols.length ? weekCols[weekCols.length - 1] : null;
 
-  // ── BLIND DRAW TABLE ──
-  let bdData = dataRows
-    .filter(r => r[1])
-    .map(r => ({
-      name:  r[1],
-      weeks: weekCols.map(w => parseFloat(r[w.colIdx]) || 0),
-      weeksRaw: weekCols.map(w => r[w.colIdx] || ''),
-      total: parseFloat(r[10]) || 0,
-      totalRaw: r[10] || '',
-      rank:  parseInt(r[11]) || 999
-    }));
+  // ── BLIND DRAW ──
+  let bdData = dataRows.filter(r => r[1]).map(r => ({
+    name:     r[1],
+    weeksRaw: weekCols.map(w => r[w.colIdx] || ''),
+    total:    parseFloat(r[10]) || 0,
+    totalRaw: r[10] || '',
+    rank:     parseInt(r[11]) || 999
+  }));
+
+  const bdWrap = document.getElementById('blindDrawTable');
+  bdWrap.innerHTML = '';
+  const bdTableEl = document.createElement('div');
+  bdTableEl.className = 'table-wrap';
 
   function renderBDTable(sortKey, sortDir) {
     const sorted = [...bdData].sort((a, b) => {
@@ -643,10 +597,8 @@ function buildSummary(rows) {
         const bi = lastWeekCol ? (parseFloat(b.weeksRaw[weekCols.indexOf(lastWeekCol)]) || 0) : 0;
         return sortDir * (bi - ai);
       }
-      if (sortKey === 'total') return sortDir * (b.total - a.total);
       return a.rank - b.rank;
     });
-
     let html = `<table><thead><tr>
       <th>Name</th><th class="rank-header">Rank</th>
       ${weekCols.map(w => `<th>${w.label}</th>`).join('')}
@@ -655,50 +607,38 @@ function buildSummary(rows) {
     sorted.forEach(p => {
       html += `<tr>
         <td>${p.name}</td>
-        <td class="rank-cell${p.rank === 1 ? ' rank-1' : ''}">${p.rank}</td>
+        <td class="rank-cell${p.rank === 1 ? ' rank-1' : ''}">${p.rank === 999 ? '—' : p.rank}</td>
         ${p.weeksRaw.map(w => `<td>${w || '—'}</td>`).join('')}
         <td class="total-col">${p.totalRaw}</td>
       </tr>`;
     });
     html += `</tbody></table>`;
-    tableEl.innerHTML = html;
+    bdTableEl.innerHTML = html;
   }
 
-  const bdWrap = document.getElementById('blindDrawTable');
-  bdWrap.innerHTML = '';
-  const tableEl = document.createElement('div');
-  tableEl.className = 'table-wrap';
-  const sortBtns = makeSortButtons(
-    [
-      { label: 'By Rank', key: 'rank' },
-      { label: 'By Name', key: 'name' },
-      { label: 'Most Recent Week', key: 'recent' }
-    ],
-    (key, dir) => renderBDTable(key, dir)
+  const bdSortBtns = makeSortButtons(
+    [{ label:'By Rank', key:'rank' }, { label:'By Name', key:'name' }, { label:'Most Recent Week', key:'recent' }],
+    renderBDTable
   );
-  bdWrap.appendChild(sortBtns);
-  bdWrap.appendChild(tableEl);
+  bdWrap.appendChild(bdSortBtns);
+  bdWrap.appendChild(bdTableEl);
   renderBDTable('rank', 1);
 
-  // ── INDIVIDUAL STATS TABLE ──
-  // cols: O=14(name), P=15(W1 HC), Q=16(curr HC), R=17(next HC),
-  //       S=18(rounds), T=19(wkly pts), U=20(total pts), V=21(ind rank), W=22(avg)
-  //       X=23(CR gross), Y=24(CR net)
+  // ── INDIVIDUAL STANDINGS ──
   const ftRows  = rows.slice(5, 28).filter(r => r[14]);
   const subRows = rows.slice(32, 45).filter(r => {
     const name = (r[14] || '').trim();
     if (!name) return false;
-    // Exclude any row that looks like a header (e.g. "Name", "Subs", "Full Time")
     if (['name','subs','full time','substitutes'].includes(name.toLowerCase())) return false;
     return true;
   });
 
   function buildIndTable(playerRows, isSub) {
     let data = playerRows.map(r => ({
-      raw: r,
       name:      r[14],
       w1hc:      r[15] || '—',
-      currHc:    r[16] || '—',
+      currHc:    parseFloat(r[16]) || 0,
+      currHcRaw: r[16] || '—',
       nextHc:    r[17] || '—',
       rounds:    parseInt(r[18]) || 0,
       roundsRaw: r[18] || '—',
@@ -715,36 +655,28 @@ function buildSummary(rows) {
     const wrap = document.createElement('div');
 
     if (isSub) {
-      // Subs: just HC columns + rounds, no sort buttons
       let html = `<table><thead><tr>
         <th>Name</th><th>W1 HC</th><th>Curr HC</th><th>Next HC</th><th>Rounds</th><th>Avg</th>
       </tr></thead><tbody>`;
       [...data].sort((a,b) => a.name.localeCompare(b.name)).forEach(p => {
-        html += `<tr>
-          <td>${p.name}</td>
-          <td>${p.w1hc}</td><td>${p.currHc}</td><td>${p.nextHc}</td>
-          <td>${p.roundsRaw}</td>
-          <td>${p.avg}</td>
-        </tr>`;
+        html += `<tr><td>${p.name}</td><td>${p.w1hc}</td><td>${p.currHcRaw}</td>
+          <td>${p.nextHc}</td><td>${p.roundsRaw}</td><td>${p.avg}</td></tr>`;
       });
       html += `</tbody></table>`;
       wrap.innerHTML = html;
       return wrap;
     }
 
-    // Full members: sortable
     const tableEl = document.createElement('div');
-
     function renderIndTable(sortKey, sortDir) {
       const sorted = [...data].sort((a, b) => {
-        if (sortKey === 'name')     return sortDir * a.name.localeCompare(b.name);
+        if (sortKey === 'name')    return sortDir * a.name.localeCompare(b.name);
+        if (sortKey === 'currHc')  return sortDir * (a.currHc - b.currHc);
         if (sortKey === 'wklyPts') return sortDir * (b.wklyPts - a.wklyPts);
-        if (sortKey === 'totalPts') return sortDir * (b.totalPts - a.totalPts);
         return a.rank - b.rank;
       });
       let html = `<table><thead><tr>
-        <th>Name</th>
-        <th>W1 HC</th><th>Curr HC</th><th>Next HC</th>
+        <th>Name</th><th>W1 HC</th><th>Curr HC</th><th>Next HC</th>
         <th>Rnds</th><th>Wkly Pts</th><th>Total Pts</th>
         <th class="rank-header">Ind Rank</th><th>Avg</th>
         <th>CR Gross</th><th>CR Net</th>
@@ -752,26 +684,19 @@ function buildSummary(rows) {
       sorted.forEach(p => {
         html += `<tr>
           <td>${p.name}</td>
-          <td>${p.w1hc}</td><td>${p.currHc}</td><td>${p.nextHc}</td>
-          <td>${p.roundsRaw}</td>
-          <td>${p.wklyRaw}</td>
-          <td>${p.totalRaw}</td>
+          <td>${p.w1hc}</td><td>${p.currHcRaw}</td><td>${p.nextHc}</td>
+          <td>${p.roundsRaw}</td><td>${p.wklyRaw}</td><td>${p.totalRaw}</td>
           <td class="rank-cell${p.rank === 1 ? ' rank-1' : ''}">${p.rank === 999 ? '—' : p.rank}</td>
-          <td>${p.avg}</td>
-          <td>${p.crGross}</td><td>${p.crNet}</td>
+          <td>${p.avg}</td><td>${p.crGross}</td><td>${p.crNet}</td>
         </tr>`;
       });
       html += `</tbody></table>`;
       tableEl.innerHTML = html;
     }
-
     const sortBtns = makeSortButtons(
-      [
-        { label: 'By Rank', key: 'rank' },
-        { label: 'By Name', key: 'name' },
-        { label: 'Weekly Points', key: 'wklyPts' }
-      ],
-      (key, dir) => renderIndTable(key, dir)
+      [{ label:'By Rank', key:'rank' }, { label:'By Name', key:'name' },
+       { label:'By Curr HC', key:'currHc' }, { label:'Weekly Points', key:'wklyPts' }],
+      renderIndTable
     );
     wrap.appendChild(sortBtns);
     wrap.appendChild(tableEl);
@@ -781,7 +706,10 @@ function buildSummary(rows) {
 
   const indWrap = document.getElementById('indStatsTable');
   indWrap.innerHTML = '';
-  indWrap.appendChild(buildIndTable(ftRows, false));
+  const ftTableWrap = document.createElement('div');
+  ftTableWrap.className = 'table-wrap';
+  ftTableWrap.appendChild(buildIndTable(ftRows, false));
+  indWrap.appendChild(ftTableWrap);
 
   if (subRows.length) {
     const subLabel = document.createElement('div');
@@ -796,32 +724,19 @@ function buildSummary(rows) {
   }
 
   // ── THIS WEEK'S PAIRS ──
-  // Team breakdown: rows 33–56 (0-based), cols B–F (1–5)
-  // Row 32 = header, rows 33+ = data
-  // Structure: name(1), net(2), total_net(3), rank(4), points(5)
-  // Pairs share total_net/rank/points on first player row; second is blank
   const tdRows = rows.slice(33, 57).filter(r => r[1] && r[1].trim());
-
-  // Group into pairs
   const pairs = [];
   let currentPair = null;
   tdRows.forEach(r => {
-    const hasGroupData = r[3] && r[3].trim(); // total col
+    const hasGroupData = r[3] && r[3].trim();
     if (hasGroupData) {
       if (currentPair) pairs.push(currentPair);
-      currentPair = {
-        total: r[3],
-        rank: r[4],
-        points: r[5],
-        players: [{ name: r[1], net: r[2] }]
-      };
+      currentPair = { total: r[3], rank: r[4], points: r[5], players: [{ name: r[1], net: r[2] }] };
     } else if (currentPair) {
       currentPair.players.push({ name: r[1], net: r[2] });
     }
   });
   if (currentPair) pairs.push(currentPair);
-
-  // Sort by rank
   pairs.sort((a, b) => (parseInt(a.rank) || 99) - (parseInt(b.rank) || 99));
 
   let pairsHTML = `<div class="pairs-grid">`;
@@ -831,29 +746,17 @@ function buildSummary(rows) {
       <div class="pair-header">
         <span class="pair-rank">#${rank}</span>
         <span class="pair-points">${pair.points ? pair.points + ' pts' : ''}</span>
-      </div>
-      <div class="pair-body">`;
+      </div><div class="pair-body">`;
     pair.players.forEach(p => {
-      // Excel may export negative numbers as (3) instead of -3
       let rawNet = (p.net || '').toString().trim();
       let net;
-      if (/^\([\d.]+\)$/.test(rawNet)) {
-        net = -parseFloat(rawNet.replace(/[()]/g, ''));
-      } else {
-        net = parseFloat(rawNet);
-      }
-
+      if (/^\([\d.]+\)$/.test(rawNet)) net = -parseFloat(rawNet.replace(/[()]/g, ''));
+      else net = parseFloat(rawNet);
       let netStr, netClass;
-      if (isNaN(net) || rawNet === '') {
-        netStr = ''; netClass = '';
-      } else if (net < 0) {
-        netStr = `${net}`;  // already has minus sign
-        netClass = ' under';
-      } else if (net === 0) {
-        netStr = 'E'; netClass = '';
-      } else {
-        netStr = `+${Math.round(net)}`; netClass = '';
-      }
+      if (isNaN(net) || rawNet === '') { netStr = ''; netClass = ''; }
+      else if (net < 0) { netStr = `${net}`; netClass = ' under'; }
+      else if (net === 0) { netStr = 'E'; netClass = ''; }
+      else { netStr = `+${Math.round(net)}`; netClass = ''; }
       pairsHTML += `<div class="pair-player">
         <span class="pair-name">${p.name}</span>
         <span class="pair-net${netClass}">${netStr}</span>
@@ -870,48 +773,30 @@ function buildSummary(rows) {
 //  BUILD CAREER
 // ══════════════════════════════════════════
 function buildCareer(rows) {
-  // Par row: row index 1 (0-based = sheet row 2)
-  // Gross header: row 2 (sheet row 3) — holes 1–9, OUT, 10–18, IN, TOT, Rank
-  // Gross data: rows 3–25 (sheet rows 4–26)
-  // Net par row: row 29 (sheet row 30)
-  // Net header: row 30 (sheet row 31)
-  // Net data: rows 31–53 (sheet rows 32–54)
-
   const parGross  = rows[1]  || [];
   const hdrGross  = rows[2]  || [];
   const dataGross = rows.slice(3, 26).filter(r => r[1] && r[1].trim());
-
   const parNet    = rows[29] || [];
   const hdrNet    = rows[30] || [];
   const dataNet   = rows.slice(31, 54).filter(r => r[1] && r[1].trim());
 
   function buildCareerTable(parRow, hdrRow, dataRows, label, isGross) {
-    // Auto-detect column positions from the header row
-    // Header row has: blank, "Career Gross"/"Career Net", 1,2,3,...,9,OUT,(blank),10,11,...,18,IN,TOT,Com. Score,Rank
-    let holeCols = [];  // indices for holes 1-9
-    let outCol = null;
-    let backCols = []; // indices for holes 10-18
-    let inCol = null, totCol = null, rankCol = null;
-
+    let holeCols = [], outCol = null, backCols = [], inCol = null, totCol = null;
     for (let c = 2; c < hdrRow.length; c++) {
       const val = (hdrRow[c] || '').toString().trim();
       if (val === 'OUT') { outCol = c; continue; }
       if (val === 'IN')  { inCol  = c; continue; }
       if (val === 'TOT') { totCol = c; continue; }
-      if (val === 'Rank'|| val === 'rank') { rankCol = c; continue; }
       const n = parseInt(val);
-      if (!isNaN(n) && n >= 1 && n <= 9  && holeCols.length < 9)  holeCols.push(c);
+      if (!isNaN(n) && n >= 1  && n <= 9  && holeCols.length < 9) holeCols.push(c);
       if (!isNaN(n) && n >= 10 && n <= 18 && backCols.length < 9) backCols.push(c);
     }
 
     const holeNums = ['1','2','3','4','5','6','7','8','9'];
     const backNums = ['10','11','12','13','14','15','16','17','18'];
 
-    // Build par lookup: colIdx -> par value
     const parByCol = {};
-    [...holeCols, ...backCols].forEach(c => {
-      parByCol[c] = parseInt(parRow[c]) || null;
-    });
+    [...holeCols, ...backCols].forEach(c => { parByCol[c] = parseInt(parRow[c]) || null; });
 
     function scoreCell(val, colIdx) {
       const score = parseInt(val);
@@ -921,6 +806,27 @@ function buildCareer(rows) {
       if (score <= par - 1) return `<span class="score-cell birdie">${val}</span>`;
       if (score >= par + 1) return `<span class="score-cell bogey">${val}</span>`;
       return val;
+    }
+
+    // ── Recalculate rank from TOT, lowest = best, handle ties ──
+    const validRows = dataRows.filter(r => r[1] && r[1].trim());
+    const withTot = validRows.map(r => ({ r, tot: parseFloat(r[totCol]) || null }));
+    const ranked = [...withTot].sort((a, b) => {
+      if (a.tot === null && b.tot === null) return 0;
+      if (a.tot === null) return 1;
+      if (b.tot === null) return -1;
+      return a.tot - b.tot;
+    });
+    const rankMap = new Map();
+    let pos = 1;
+    for (let i = 0; i < ranked.length; i++) {
+      if (ranked[i].tot === null) { rankMap.set(ranked[i].r, null); continue; }
+      if (i > 0 && ranked[i].tot === ranked[i-1].tot) {
+        rankMap.set(ranked[i].r, rankMap.get(ranked[i-1].r));
+      } else {
+        rankMap.set(ranked[i].r, pos);
+      }
+      pos++;
     }
 
     function buildRows(sortedData) {
@@ -934,9 +840,9 @@ function buildCareer(rows) {
         <td></td>
       </tr>`;
       sortedData.forEach(r => {
-        const rank = r[rankCol] ? Math.round(parseFloat(r[rankCol])) : null;
+        const rank = rankMap.get(r);
         const tot  = r[totCol] || '';
-        const hasRank = r[rankCol] && r[rankCol].toString().trim() !== '';
+        const hasRank = rank !== null && rank !== undefined;
         const nameDisplay = r[1] + (!hasRank ? ' *' : '');
         html += `<tr>
           <td>${nameDisplay}</td>
@@ -960,7 +866,6 @@ function buildCareer(rows) {
     </tr></thead>`;
 
     const wrap = document.createElement('div');
-
     const labelEl = document.createElement('div');
     labelEl.className = 'career-label';
     labelEl.textContent = label;
@@ -968,26 +873,23 @@ function buildCareer(rows) {
 
     const tableWrap = document.createElement('div');
     tableWrap.className = 'table-wrap';
-    tableWrap.innerHTML = `<table>${thead}<tbody id="tbody-${label.replace(' ','_')}"></tbody></table>`;
+    const tbodyId = `tbody-${label.replace(/\s/g,'_')}`;
+    tableWrap.innerHTML = `<table>${thead}<tbody id="${tbodyId}"></tbody></table>`;
 
     function renderCareerRows(sortKey, sortDir) {
-      const sorted = [...dataRows].sort((a, b) => {
+      const sorted = [...validRows].sort((a, b) => {
         if (sortKey === 'name') return sortDir * (a[1] || '').localeCompare(b[1] || '');
-        const ra = parseFloat(a[rankCol]) || 999;
-        const rb = parseFloat(b[rankCol]) || 999;
+        const ra = rankMap.get(a) || 999;
+        const rb = rankMap.get(b) || 999;
         return ra - rb;
       });
       tableWrap.querySelector('tbody').innerHTML = buildRows(sorted);
     }
 
     const sortBtns = makeSortButtons(
-      [
-        { label: 'By Rank', key: 'rank' },
-        { label: 'By Name', key: 'name' }
-      ],
-      (key, dir) => renderCareerRows(key, dir)
+      [{ label:'By Rank', key:'rank' }, { label:'By Name', key:'name' }],
+      renderCareerRows
     );
-
     wrap.appendChild(sortBtns);
     wrap.appendChild(tableWrap);
     renderCareerRows('rank', 1);
@@ -1001,21 +903,96 @@ function buildCareer(rows) {
 }
 
 // ══════════════════════════════════════════
+//  BUILD SKINS
+// ══════════════════════════════════════════
+function buildSkins(rows) {
+  // Row 1 = header (index 1), rows 2+ = data (index 2 onward)
+  // Cols: A=0(row#), B=1(blank), C=2(name), D=3(paid), E=4(skins), F=5(skins$), G=6(net), H=7(tied low), I=8(close calls)
+  const dataRows = rows.slice(2).filter(r => {
+    const name = (r[2] || '').trim();
+    return name && name !== '' && !isNaN(parseFloat(r[3]));
+  });
+
+  let skinsData = dataRows.map(r => {
+    const paid    = parseFloat(r[3]) || 0;
+    const skins   = parseInt(r[4])   || 0;
+    const skinsD  = parseFloat(r[5]) || 0;
+    const net     = parseFloat(r[6]) || 0;
+    const tiedLow = parseInt(r[7])   || 0;
+    const closeCalls = parseInt(r[8])|| 0;
+    const weeks   = paid > 0 ? Math.round(paid / 5) : 0;
+    return { name: r[2], weeks, paid, skins, skinsD, net, tiedLow, closeCalls };
+  });
+
+  const skinsWrap = document.getElementById('skinsTable');
+  skinsWrap.innerHTML = '';
+  const tableEl = document.createElement('div');
+  tableEl.className = 'table-wrap';
+
+  function renderSkinsTable(sortKey, sortDir) {
+    const sorted = [...skinsData].sort((a, b) => {
+      if (sortKey === 'name')    return sortDir * a.name.localeCompare(b.name);
+      if (sortKey === 'net')     return sortDir * (b.net - a.net);
+      if (sortKey === 'skins')   return sortDir * (b.skins - a.skins);
+      // Default: by skins $ desc
+      return b.skinsD - a.skinsD;
+    });
+
+    let html = `<table><thead><tr>
+      <th>Name</th>
+      <th>Wks Played</th>
+      <th>Skins</th>
+      <th>Skins $</th>
+      <th>Net</th>
+      <th>Tied Low</th>
+      <th>Close Calls</th>
+    </tr></thead><tbody>`;
+
+    sorted.forEach(p => {
+      const netClass = p.net > 0 ? 'skins-net-pos' : p.net < 0 ? 'skins-net-neg' : '';
+      const netStr = p.net > 0 ? `+$${p.net.toFixed(2)}` : p.net < 0 ? `-$${Math.abs(p.net).toFixed(2)}` : '$0.00';
+      html += `<tr>
+        <td>${p.name}</td>
+        <td>${p.weeks}</td>
+        <td>${p.skins}</td>
+        <td>$${p.skinsD.toFixed(2)}</td>
+        <td class="${netClass}">${netStr}</td>
+        <td>${p.tiedLow}</td>
+        <td>${p.closeCalls}</td>
+      </tr>`;
+    });
+    html += `</tbody></table>`;
+    tableEl.innerHTML = html;
+  }
+
+  const sortBtns = makeSortButtons(
+    [{ label:'By Skins $', key:'skinsD' }, { label:'By Skins', key:'skins' },
+     { label:'By Net', key:'net' }, { label:'By Name', key:'name' }],
+    renderSkinsTable
+  );
+  skinsWrap.appendChild(sortBtns);
+  skinsWrap.appendChild(tableEl);
+  renderSkinsTable('skinsD', 1);
+}
+
+// ══════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════
 async function init() {
   try {
-    const [summaryRows, careerRows] = await Promise.all([
+    const [summaryRows, careerRows, skinsRows] = await Promise.all([
       fetchCSV(SUMMARY_GID),
-      fetchCSV(CAREER_GID)
+      fetchCSV(CAREER_GID),
+      fetchCSV(SKINS_GID)
     ]);
     buildSummary(summaryRows);
     buildCareer(careerRows);
+    buildSkins(skinsRows);
   } catch (err) {
     console.error(err);
-    ['blindDrawTable','indStatsTable','weekResultsGrid','careerTables'].forEach(id => {
+    ['blindDrawTable','indStatsTable','weekResultsGrid','careerTables','skinsTable'].forEach(id => {
       const el = document.getElementById(id);
-      if (el) el.innerHTML = `<div class="error-msg">Unable to load data. Make sure the spreadsheet is shared publicly (Anyone with the link → Viewer).</div>`;
+      if (el) el.innerHTML = `<div class="error-msg">Unable to load data. Make sure the spreadsheet is shared publicly.</div>`;
     });
   }
 }
