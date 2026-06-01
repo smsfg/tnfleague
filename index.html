@@ -472,8 +472,8 @@
             <strong>Skins:</strong> Total number of skins won — outright low score on a hole with no ties.&nbsp;&nbsp;
             <strong>Skins $:</strong> Total cash won from skins.&nbsp;&nbsp;
             <strong>Net:</strong> Skins $ minus amount paid in — your profit or loss on the season.&nbsp;&nbsp;
-            <strong>Tied Low:</strong> Number of times you had the low score on a hole but tied with one or more others, so no skin was awarded.&nbsp;&nbsp;
-            <strong>Close Calls:</strong> Times you tied for low on a hole with just one other person — the narrowest miss.
+            <strong>Low Hole:</strong> Number of times you were the low score on a hole — includes skins won, close calls, and ties with multiple players.&nbsp;&nbsp;
+            <strong>Close Calls:</strong> Times you tied for the low score on a hole with just one other person — the narrowest miss at a skin.
           </p>
         </div>
       </div>
@@ -808,9 +808,18 @@ function buildCareer(rows) {
       return val;
     }
 
-    // ── Recalculate rank from TOT, lowest = best, handle ties ──
+    // ── Recalculate rank from TOT — only for complete rounds ──
+    // A complete round = has at least one non-zero score in the back 9
     const validRows = dataRows.filter(r => r[1] && r[1].trim());
-    const withTot = validRows.map(r => ({ r, tot: parseFloat(r[totCol]) || null }));
+    const isComplete = (r) => backCols.some(c => {
+      const v = parseInt(r[c]);
+      return !isNaN(v) && v > 0;
+    });
+
+    const completeRows   = validRows.filter(r => isComplete(r));
+    const incompleteRows = validRows.filter(r => !isComplete(r));
+
+    const withTot = completeRows.map(r => ({ r, tot: parseFloat(r[totCol]) || null }));
     const ranked = [...withTot].sort((a, b) => {
       if (a.tot === null && b.tot === null) return 0;
       if (a.tot === null) return 1;
@@ -828,8 +837,10 @@ function buildCareer(rows) {
       }
       pos++;
     }
+    // Incomplete rows get no rank
+    incompleteRows.forEach(r => rankMap.set(r, null));
 
-    function buildRows(sortedData) {
+    function buildRows(sortedComplete, sortedIncomplete) {
       let html = `<tr class="par-row">
         <td>Par</td>
         ${holeCols.map(c => `<td>${parRow[c] || ''}</td>`).join('')}
@@ -839,51 +850,44 @@ function buildCareer(rows) {
         <td>${parRow[totCol] || ''}</td>
         <td></td>
       </tr>`;
-      sortedData.forEach(r => {
+      sortedComplete.forEach(r => {
         const rank = rankMap.get(r);
         const tot  = r[totCol] || '';
-        const hasRank = rank !== null && rank !== undefined;
-        const nameDisplay = r[1] + (!hasRank ? ' *' : '');
         html += `<tr>
-          <td>${nameDisplay}</td>
+          <td>${r[1]}</td>
           ${holeCols.map(c => `<td>${scoreCell(r[c], c)}</td>`).join('')}
           <td class="subtotal">${r[outCol] || ''}</td>
-          ${backCols.map(c => `<td>${r[c] === '0' ? '—' : scoreCell(r[c], c)}</td>`).join('')}
-          <td class="subtotal">${r[inCol] === '0' || !r[inCol] ? '—' : r[inCol]}</td>
+          ${backCols.map(c => `<td>${scoreCell(r[c], c)}</td>`).join('')}
+          <td class="subtotal">${r[inCol] || ''}</td>
           <td class="total-col">${tot || '—'}</td>
           <td class="rank-cell${rank === 1 ? ' rank-1' : ''}">${rank || '—'}</td>
+        </tr>`;
+      });
+      sortedIncomplete.forEach(r => {
+        html += `<tr>
+          <td>${r[1]} *</td>
+          ${holeCols.map(c => `<td>${scoreCell(r[c], c)}</td>`).join('')}
+          <td class="subtotal">${r[outCol] || ''}</td>
+          ${backCols.map(c => `<td style="color:var(--gray-dark)">—</td>`).join('')}
+          <td class="subtotal" style="color:var(--gray-dark)">—</td>
+          <td class="total-col" style="color:var(--gray-dark);font-style:italic;">No Score</td>
+          <td class="rank-cell" style="color:var(--gray-dark)">—</td>
         </tr>`;
       });
       return html;
     }
 
-    const thead = `<thead><tr class="hole-header">
-      <th>Player</th>
-      ${holeNums.map(h => `<th>${h}</th>`).join('')}
-      <th>OUT</th>
-      ${backNums.map(h => `<th>${h}</th>`).join('')}
-      <th>IN</th><th>TOT</th><th class="rank-header">Rank</th>
-    </tr></thead>`;
-
-    const wrap = document.createElement('div');
-    const labelEl = document.createElement('div');
-    labelEl.className = 'career-label';
-    labelEl.textContent = label;
-    wrap.appendChild(labelEl);
-
-    const tableWrap = document.createElement('div');
-    tableWrap.className = 'table-wrap';
-    const tbodyId = `tbody-${label.replace(/\s/g,'_')}`;
-    tableWrap.innerHTML = `<table>${thead}<tbody id="${tbodyId}"></tbody></table>`;
-
     function renderCareerRows(sortKey, sortDir) {
-      const sorted = [...validRows].sort((a, b) => {
+      const sortedComplete = [...completeRows].sort((a, b) => {
         if (sortKey === 'name') return sortDir * (a[1] || '').localeCompare(b[1] || '');
         const ra = rankMap.get(a) || 999;
         const rb = rankMap.get(b) || 999;
         return ra - rb;
       });
-      tableWrap.querySelector('tbody').innerHTML = buildRows(sorted);
+      const sortedIncomplete = [...incompleteRows].sort((a, b) =>
+        (a[1] || '').localeCompare(b[1] || '')
+      );
+      tableWrap.querySelector('tbody').innerHTML = buildRows(sortedComplete, sortedIncomplete);
     }
 
     const sortBtns = makeSortButtons(
@@ -944,7 +948,7 @@ function buildSkins(rows) {
       <th>Skins</th>
       <th>Skins $</th>
       <th>Net</th>
-      <th>Tied Low</th>
+      <th>Low Hole</th>
       <th>Close Calls</th>
     </tr></thead><tbody>`;
 
