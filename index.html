@@ -414,6 +414,7 @@
   <!-- ══════════ SUMMARY PAGE ══════════ -->
   <div class="page active" id="page-summary">
     <div class="page-inner">
+      <div id="resultsThrough" style="font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:600; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:16px;"></div>
       <div class="section">
         <div class="section-header">
           <span class="section-title">Blind Draw Standings</span>
@@ -565,6 +566,15 @@ function buildSummary(rows) {
   document.getElementById('weekBadge').textContent = `Week ${weekNum} · ${halfLabel}`;
   document.getElementById('weekResultsLabel').textContent = `Week ${weekNum} blind draw pairs & scores`;
   document.getElementById('blindDrawSubtitle').textContent = `${halfLabel} points by week`;
+
+  // Results through date — cell B1 (row 0, col 1)
+  const resultsDate = (weekRow[1] || '').trim();
+  const rtEl = document.getElementById('resultsThrough');
+  if (resultsDate) {
+    rtEl.textContent = `Results through: ${resultsDate}`;
+  } else {
+    rtEl.textContent = '';
+  }
 
   // Week columns
   const weekCols = [];
@@ -1000,7 +1010,7 @@ function buildSkins(rows) {
   }
 
   const sortBtns = makeSortButtons(
-    [{ label:'By Skins $', key:'skinsD' }, { label:'By Skins', key:'skins' },
+    [{ label:'By Skins $', key:'skinsD' }, { label:'By Skins #', key:'skins' },
      { label:'By Net', key:'net' }, { label:'Low Hole', key:'lowHole' },
      { label:'Close Calls', key:'closeCalls' }, { label:'By Name', key:'name' }],
     renderSkinsTable
