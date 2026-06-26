@@ -414,6 +414,7 @@
   <!-- ══════════ SUMMARY PAGE ══════════ -->
   <div class="page active" id="page-summary">
     <div class="page-inner">
+      <div id="notesBox" style="display:none; margin-bottom:20px; padding:14px 18px; background:var(--white); border-radius:8px; border-left:3px solid var(--gold); box-shadow:0 1px 6px rgba(0,0,0,0.06);"></div>
       <div id="resultsThrough" style="font-family:'Barlow Condensed',sans-serif; font-size:13px; font-weight:600; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase; margin-bottom:16px;"></div>
       <div class="section">
         <div class="section-header">
@@ -491,6 +492,7 @@ const SHEET_ID    = '18nSb4-SROWBz1zFkinrknAYCfZTv2wuLGcbPbWrlPfk';
 const SUMMARY_GID = '559224546';
 const CAREER_GID  = '553514996';
 const SKINS_GID   = '2126175510';
+const NOTES_GID   = '194990616';
 
 // ── NAV ──
 function showPage(name, btn) {
@@ -1021,18 +1023,42 @@ function buildSkins(rows) {
 }
 
 // ══════════════════════════════════════════
+//  BUILD NOTES
+// ══════════════════════════════════════════
+function buildNotes(rows) {
+  // A1, A2, A3 = rows[0][0], rows[1][0], rows[2][0]
+  const lines = [0, 1, 2].map(i => ((rows[i] || [])[0] || '').trim()).filter(l => l !== '');
+  const box = document.getElementById('notesBox');
+  if (lines.length === 0) {
+    box.style.display = 'none';
+    return;
+  }
+  box.style.display = 'block';
+  box.innerHTML = lines.map(line => {
+    // Auto-linkify URLs
+    const linked = line.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener" style="color:var(--navy);text-decoration:underline;">$1</a>');
+    return `<p style="font-size:13px; color:var(--text); line-height:1.6; margin-bottom:6px;">${linked}</p>`;
+  }).join('');
+  // Remove trailing margin from last paragraph
+  const last = box.querySelector('p:last-child');
+  if (last) last.style.marginBottom = '0';
+}
+
+// ══════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════
 async function init() {
   try {
-    const [summaryRows, careerRows, skinsRows] = await Promise.all([
+    const [summaryRows, careerRows, skinsRows, notesRows] = await Promise.all([
       fetchCSV(SUMMARY_GID),
       fetchCSV(CAREER_GID),
-      fetchCSV(SKINS_GID)
+      fetchCSV(SKINS_GID),
+      fetchCSV(NOTES_GID)
     ]);
     buildSummary(summaryRows);
     buildCareer(careerRows);
     buildSkins(skinsRows);
+    buildNotes(notesRows);
   } catch (err) {
     console.error(err);
     ['blindDrawTable','indStatsTable','weekResultsGrid','careerTables','skinsTable'].forEach(id => {
